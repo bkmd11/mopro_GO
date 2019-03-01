@@ -43,6 +43,7 @@ def climb_finder(web_address):
 
 
 # Determine if link is to a route or a climb
+### I need to rethink how I am going about this
 def area_or_route(web_address):
     request = requests.get(web_address)
     request.raise_for_status()
@@ -76,7 +77,7 @@ for link in areas:
     elif x == 'climb':
         climb_links += climb_finder(link)
 
-
+### This will work if I just collect all links...
 for link in sub_area_links: 
     if 'area' in link:
         sub_area_links += area_finder(link)
