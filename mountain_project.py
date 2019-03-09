@@ -56,8 +56,8 @@ def link_finder(web_address):
 ### Doesnt work as desired yet
 def list_swap(climbing_list, area_list):
     for link in climbing_list:
-        if 'area' in link:
-            area_list += link   ### For some reason this adds each letter as its own string
+        if '/area/' in link:
+            area_list += [link]   ### For some reason this adds each letter as its own string
             climbing_list.remove(link)
     return climbing_list, area_list
 
@@ -78,6 +78,7 @@ for link in areas:
     else:
         climb_links += y
 
+### I need to actually analyze what this does
 climb_links, sub_area_links = list_swap(climb_links, sub_area_links)
 
 ### Does not add anything into sub_sub_area_links...
@@ -92,6 +93,11 @@ climb_links, sub_sub_area_links = list_swap(climb_links, sub_sub_area_links)
 
 sys.exit()  # I have this here because idk how to debug this correctly
 
+# A hack to remove links I can figure out how to get rid of normally
+for link in climb_links:
+    if '#' or '/map/' in link:
+        climb_links.remove(link)
+        
 for climb in climb_links:
     try:
         url = climb
