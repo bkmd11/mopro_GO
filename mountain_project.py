@@ -16,75 +16,81 @@ import pprint
 
 
 # Finds links to areas
-def area_finder(web_address):
-    request = requests.get(web_address)
-    request.raise_for_status()
-
+def area_finder(page_links):
     areas = []
-    left_nav_row = SoupStrainer(class_='lef-nav-row')
-    climbing_areas = BeautifulSoup(request.text, parse_only=left_nav_row,features='lxml')
-    for link in climbing_areas.find_all('a'):
+    for link in page_links.find_all('a'):
         areas.append(link.get('href'))
     return areas
 
 
 # Finds all the climbs on the web page
-def climb_finder(web_address):
+def climb_finder(page_links):
     climbs = []
-    request = requests.get(web_address)
-    request.raise_for_status()
-
-    mp_sidebar = SoupStrainer(class_='mp-sidebar')
-    sub_climbing_areas = BeautifulSoup(request.text, parse_only=mp_sidebar, features='lxml')
-
-    for link in sub_climbing_areas.find_all('a'):
+    for link in page_links.find_all('a'):
         climbs.append(link.get('href'))
     return climbs
 
 
 # Determine if link is to a route or a climb
-### I need to rethink how I am going about this
-def area_or_route(web_address):
+def link_finder(web_address):
     request = requests.get(web_address)
     request.raise_for_status()
 
     mp_sidebar = SoupStrainer(class_='mp-sidebar')
-    climb_or_area = BeautifulSoup(request.text, parse_only=mp_sidebar, features='lxml')
-
-### For some reason this always goes climb
-### I need to find somethinng unique to climb pages
-    climbOrArea = climb_or_area.select('td')   # This creates a list you fool
-    if climbOrArea != None:
-        return 'climb'
+    page_links = BeautifulSoup(request.text, parse_only=mp_sidebar,features='lxml')
+    
+    if 'lef-nav-row' in request.text:
+        left_nav_row = SoupStrainer(class_='lef-nav-row')
+        areaLinks = BeautifulSoup(request.text,parse_only=left_nav_row,features='lxml')
+        area_links = area_finder(areaLinks)
+        return 'area', area_links
     else:
-        return 'area'
+        max_height = SoupStrainer({'id':'lef-nav-route-table'})
+        route_links = BeautifulSoup(request.text,parse_only=max_height,features='lxml')
+        climbing_links = climb_finder(page_links)
+        return 'climb', climbing_links
+        ### climbing_links includes maps and random #... ill need to strip those
 
 
+# Checks for error in link placemant and corrects it
+### Doesnt work as desired yet
+def list_swap(climbing_list, area_list):
+    for link in climbing_list:
+        if 'area' in link:
+            area_list += link   ### For some reason this adds each letter as its own string
+            climbing_list.remove(link)
+    return climbing_list, area_list
+
+            
 # Setting global variables
 sub_area_links = []
+sub_sub_area_links = []
 climb_links = []
 
 # Makes a requests obj and parses to BS
-# Needs to change url for every possible location and all areas and all climbs
-areas = area_finder('https://www.mountainproject.com/area/105929413/pawtuckaway')
-
+string, areas = link_finder('https://www.mountainproject.com/area/105929413/pawtuckaway')
 
 # Gets me a list of sub areas
 for link in areas:
-    x = area_or_route(link)
+    x,y = link_finder(link)
     if x == 'area':
-        sub_area_links += area_finder(link)
-    elif x == 'climb':
-        climb_links += climb_finder(link)
+        sub_area_links += y
+    else:
+        climb_links += y
 
-### This will work if I just collect all links...
+climb_links, sub_area_links = list_swap(climb_links, sub_area_links)
+
+### Does not add anything into sub_sub_area_links...
 for link in sub_area_links: 
-    if 'area' in link:
-        sub_area_links += area_finder(link)
-    elif 'route' in link:
-        climb_links.append(climb_finder(link))
+    x,y = link_finder(link)
+    if x == 'area':
+        sub_sub_area_links += y
+    elif x == 'climb':
+        climb_links += x
 
-#sys.exit()  # I have this here because idk how to debug this correctly
+climb_links, sub_sub_area_links = list_swap(climb_links, sub_sub_area_links)
+
+sys.exit()  # I have this here because idk how to debug this correctly
 
 for climb in climb_links:
     try:
