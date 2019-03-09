@@ -46,33 +46,33 @@ def link_finder(web_address):
         area_links = area_finder(areaLinks)
         return 'area', area_links
     else:
-        max_height = SoupStrainer({'id':'lef-nav-route-table'})
-        route_links = BeautifulSoup(request.text,parse_only=max_height,features='lxml')
         climbing_links = climb_finder(page_links)
         return 'climb', climbing_links
 
-           
-# Setting global variables
-sub_area_links = []
-sub_sub_area_links = []
-climb_links = []
+def main_loop(area_links):
+     sub_area_links = []
+     links_to_climbs = []
+     while True:
+         for link in area_links:
+             x, y = link_finder(link)
+             if x == 'area':
+                 sub_area_links += y
+             else:
+                 links_to_climbs += y
+         area_links = sub_area_links
+         if len(area_links) == 0:
+             break
+         sub_area_links = []
+     return links_to_climbs
 
-# Makes a requests obj and parses to BS
-string, areas = link_finder('https://www.mountainproject.com/area/105929413/pawtuckaway')
+
+# sets the initial area
+string, area = link_finder('https://www.mountainproject.com/area/105929413/pawtuckaway')
 
 # Loops through every area and sub area
-while True:
-    for link in areas:
-        x, y = link_finder(link)
-        if x == 'area':
-            sub_area_links += y
-        else:
-            climb_links += y
-    areas = sub_area_links
-    if len(areas) == 0:
-        break
-    sub_area_links = []
-        
+climb_links = main_loop(area)
+print(len(climb_links))
+sys.exit()
 for climb in climb_links:
     url = climb
     res = requests.get(url)
@@ -80,9 +80,10 @@ for climb in climb_links:
 
     climb_text = BeautifulSoup(res.text, 'html.parser')
 
-    # This searches for climbs in each area
-    text_to_search = climb_text.select('.fr-view')    # Description
-
+    text_to_search = climb_text.select('.fr-view')    # Description, Location, Protection
+    ### I need to narrow this down
+    ### Something to do with <h2> header...
+    
     # Makes a regex to find
     # Needs to search for more variations
     climbing_term = re.compile(r'off width|off-width|chimney', re.I) 
