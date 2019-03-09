@@ -69,6 +69,8 @@ climb_links = []
 # Makes a requests obj and parses to BS
 string, areas = link_finder('https://www.mountainproject.com/area/105929413/pawtuckaway')
 
+### I need to make a while loop to go through a whole state
+
 # Gets me a list of sub areas
 for link in areas:
     x,y = link_finder(link)
