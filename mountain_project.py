@@ -78,13 +78,14 @@ for climb in climb_links:
     res = requests.get(url)
     res.raise_for_status()
 
+    # Pulls out just the description
     strainer = SoupStrainer(class_='col-xs-12')
     climb_text = BeautifulSoup(res.text, parse_only=strainer, features='lxml')
     description = climb_text.find_all(class_='fr-view')
 
     # Makes a regex to find
-    # Needs to search for more variations
-    climbing_term = re.compile(r'off width|off-width|chimney', re.I)
+    # Needs to search for more variations specifically 'ow'
+    climbing_term = re.compile(r'off width|off-width|chimney| ow ', re.I)
     awesome_climb = climbing_term.search(str(description[0]))
 
     # If regex is found on page do the thing.
