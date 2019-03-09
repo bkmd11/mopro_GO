@@ -20,6 +20,7 @@ def area_finder(page_links):
     areas = []
     for link in page_links.find_all('a'):
         areas.append(link.get('href'))
+    areas = [link for link in areas if '.com/area/' in link]
     return areas
 
 
@@ -41,9 +42,7 @@ def link_finder(web_address):
     page_links = BeautifulSoup(request.text, parse_only=mp_sidebar,features='lxml')
     
     if 'lef-nav-row' in request.text:
-        left_nav_row = SoupStrainer(class_='lef-nav-row')
-        areaLinks = BeautifulSoup(request.text,parse_only=left_nav_row,features='lxml')
-        area_links = area_finder(areaLinks)
+        area_links = area_finder(page_links)
         return 'area', area_links
     else:
         climbing_links = climb_finder(page_links)
