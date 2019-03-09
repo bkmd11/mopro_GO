@@ -28,6 +28,7 @@ def climb_finder(page_links):
     climbs = []
     for link in page_links.find_all('a'):
         climbs.append(link.get('href'))
+    climbs = [link for link in climbs if 'com/route/' in link]   # Takes out extra links that get pulled
     return climbs
 
 
@@ -49,15 +50,13 @@ def link_finder(web_address):
         route_links = BeautifulSoup(request.text,parse_only=max_height,features='lxml')
         climbing_links = climb_finder(page_links)
         return 'climb', climbing_links
-        ### climbing_links includes maps and random #... ill need to strip those
 
 
 # Checks for error in link placemant and corrects it
-### Doesnt work as desired yet
 def list_swap(climbing_list, area_list):
     for link in climbing_list:
         if '/area/' in link:
-            area_list += [link]   ### For some reason this adds each letter as its own string
+            area_list.append(link)   
             climbing_list.remove(link)
     return climbing_list, area_list
 
@@ -81,22 +80,16 @@ for link in areas:
 ### I need to actually analyze what this does
 climb_links, sub_area_links = list_swap(climb_links, sub_area_links)
 
-### Does not add anything into sub_sub_area_links...
 for link in sub_area_links: 
     x,y = link_finder(link)
     if x == 'area':
         sub_sub_area_links += y
     elif x == 'climb':
-        climb_links += x
+        climb_links += y
 
 climb_links, sub_sub_area_links = list_swap(climb_links, sub_sub_area_links)
 
 sys.exit()  # I have this here because idk how to debug this correctly
-
-# A hack to remove links I can figure out how to get rid of normally
-for link in climb_links:
-    if '#' or '/map/' in link:
-        climb_links.remove(link)
         
 for climb in climb_links:
     try:
@@ -138,8 +131,4 @@ for climb in climb_links:
 
     It doesnt go all the way to the end of the areas to get to climbs if there
     are more than two steps.
-
-    Possibly taking all my request and BS stuff out of the functions so
-    I can use the lef_nav_row tag as my test to see if there are climbs or areas
-    in the mp-side_bar... now that I say it that way it makes sense
 """
