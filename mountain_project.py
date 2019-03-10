@@ -7,12 +7,10 @@ it to a file with links to the climbs page, ordered by grade.
 This will be my masterpiece.
 """
 
+import json
 import requests
 import re
 from bs4 import BeautifulSoup, SoupStrainer
-
-import sys
-import pprint
 
 
 # Finds links to areas
@@ -52,6 +50,7 @@ def link_finder(web_address):
 def main_loop(area_links):
     sub_area_links = []
     links_to_climbs = []
+
     while True:
         for link in area_links:
             x, y = link_finder(link)
@@ -59,46 +58,60 @@ def main_loop(area_links):
                 sub_area_links += y
             else:
                 links_to_climbs += y
+
         area_links = sub_area_links
         if len(area_links) == 0:
             break
+
         sub_area_links = []
     return links_to_climbs
 
 
-# sets the initial area
-string, area = link_finder('https://www.mountainproject.com/area/105929413/pawtuckaway')
-
-# Loops through every area and sub area
-climb_links = main_loop(area)
-
-# Goes through climb links to search for regex
-for climb in climb_links:
-    url = climb
-    res = requests.get(url)
-    res.raise_for_status()
-
-    # Pulls out just the description
-    strainer = SoupStrainer(class_='col-xs-12')
-    climb_text = BeautifulSoup(res.text, parse_only=strainer, features='lxml')
-    description = climb_text.find_all(class_='fr-view')
-
-    # Makes a regex to find
-    # Needs to search for more variations specifically 'ow'
+# A regex for off-widths
+def regex_search(page_text):
     climbing_term = re.compile(r'off width|off-width|chimney| ow ', re.I)
-    awesome_climb = climbing_term.search(str(description[0]))
+    awesome_climb = climbing_term.search(str(page_text[0]))
 
     # If regex is found on page do the thing.
-    # Will be changed to make a link in a file
     if awesome_climb is not None:
-        print(climb)
+        return 'send_it'
     else:
-        continue
+        return None
 
-""" 
-    Current short comings, it searches the entire page for my regex, resulting
-    in climbs that are located by a chminey to show up.
 
-    and again, organize by location or grade.
-    And market it to make millions
-"""
+# Parses out the description of a climb 
+def awesome_climb(links_to_climbs):
+    off_width_links = []
+    for climb in links_to_climbs:
+        res = requests.get(climb)
+        res.raise_for_status()
+
+        # Pulls out just the description
+        strainer = SoupStrainer(class_='col-xs-12')
+        climb_text = BeautifulSoup(res.text, parse_only=strainer, features='lxml')
+        description = climb_text.find_all(class_='fr-view')
+
+        awesome_climb = regex_search(description)
+        if awesome_climb is not None:
+            off_width_links.append(climb)
+        else:
+            continue
+    return off_width_links
+
+
+def main():
+    # sets the initial area
+    string, area = link_finder('https://www.mountainproject.com/area/105929413/pawtuckaway')
+
+    # Loops through every area and sub area
+    climb_links = main_loop(area)
+
+    # Goes through climb links to search for regex
+    off_widths = awesome_climb(climb_links)
+
+    with open('off_width.json', 'w') as climb_file:
+        json.dump(off_widths,climb_file)
+
+
+if __name__ == '__main__':
+    main()
