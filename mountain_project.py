@@ -101,7 +101,7 @@ def awesome_climb(links_to_climbs):
 
 def main():
     # sets the initial area
-    string, area = link_finder('https://www.mountainproject.com/area/105929413/pawtuckaway')
+    string, area = link_finder('https://www.mountainproject.com/area/105872225/new-hampshire')
 
     # Loops through every area and sub area
     climb_links = main_loop(area)
