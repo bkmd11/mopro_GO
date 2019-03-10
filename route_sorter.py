@@ -32,7 +32,6 @@ def navigation_tree(request):
 
         
 def dict_maker(list_of_climbs):
-    #count = 0       # I have this here for while im dubugging. Keeps list short
     dict_of_climbs = {}
     for url in list_of_climbs:
         request = requests.get(url)
@@ -45,10 +44,6 @@ def dict_maker(list_of_climbs):
 
         dict_of_climbs[url] = nav_tree
 
-        # This is also for debugging
-       # count += 1
-       # if count == 5:
-       #     break
         
     return dict_of_climbs
 
