@@ -33,12 +33,6 @@ def navigation_tree(request):
     return nav_tree[2:4]
 
 
-def list_sorter(master_list):
-    master_list.sort(key = operator.itemgetter(2,-1))
-
-    return master_list
-
-
 # Makes a list of the url, areas, and grade, returns a tuple       
 def list_maker(list_of_climbs):
     master_list = []
@@ -55,8 +49,8 @@ def list_maker(list_of_climbs):
         list_ += nav_tree
 
         master_list.append(tuple(list_))
-        master_list.sort(key = operator.itemgetter(2,-1))   # sorts by area, then grade
-        
+        master_list.sort(key = operator.itemgetter(1, 2, -1))   # sorts by area, then grade
+    
     return master_list
 
 # Writes to a text file
@@ -71,13 +65,13 @@ def file_writer(sorted_list):
     climb_file.close()
 
 
-    
 with open('off_width.json', 'r') as climbing_list:
     off_width_list = json.load(climbing_list)
     
 # Finds the nav_tree for every climb on my list
-climb_list = list_maker(off_width_list[100:120])
+climb_list = list_maker(off_width_list)
 file_writer(climb_list)
+print(len(climb_list))
 
 
 """
