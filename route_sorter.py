@@ -29,8 +29,14 @@ def navigation_tree(request):
 
     for link in navigation_tree.find_all('a'):
         nav_tree.append(link.get('href').rsplit('/', 1)[1])
-    del nav_tree[0]
-    return nav_tree
+        
+    return nav_tree[2:4]
+
+
+def list_sorter(master_list):
+    master_list.sort(key = operator.itemgetter(2,-1))
+
+    return master_list
 
 
 # Makes a list of the url, areas, and grade, returns a tuple       
@@ -49,19 +55,29 @@ def list_maker(list_of_climbs):
         list_ += nav_tree
 
         master_list.append(tuple(list_))
-
+        master_list.sort(key = operator.itemgetter(2,-1))   # sorts by area, then grade
+        
     return master_list
+
+# Writes to a text file
+def file_writer(sorted_list):
+    climb_file = open('master_list.txt', 'w')
+
+    for i in climb_list:
+        climb_file.write('{}\n'.format(i[1]))
+        climb_file.write('{}\n'.format(i[2]))
+        climb_file.write('{}--- {}\n\n'.format(i[0], i[-1]))
+
+    climb_file.close()
+
 
     
 with open('off_width.json', 'r') as climbing_list:
     off_width_list = json.load(climbing_list)
     
 # Finds the nav_tree for every climb on my list
-climb_list = list_maker(off_width_list[190:210])
-climb_list.sort(key = operator.itemgetter(2,-1)) # Organizes by area, then grade
-
-link_list = [x[0] for x in climb_list]    # This takes my sorted urls
-pprint.pprint(climb_list)   # Also for debugging
+climb_list = list_maker(off_width_list[100:120])
+file_writer(climb_list)
 
 
 """
@@ -74,4 +90,7 @@ pprint.pprint(climb_list)   # Also for debugging
     I have my list of tuples sorted. I just need to figure out how I want to
     display this information... Just saving it and pulling info by an area
     would probably be simplest.
+
+    Writing the master list to a txt file currently. Sorting by grade is a little
+    weird because .10 comes before .9, but whatevs.
 """
