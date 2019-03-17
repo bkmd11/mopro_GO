@@ -5,11 +5,20 @@ project. It will use requests and BeautifulSoup to gather this info and save
 it to a file with links to the climbs page, ordered by grade. 
 
 This will be my masterpiece.
+
+Kind of annoyed that json doesnt save this as a list of tuples... but I can deal.
+Maybe someday I will figure out a better way to save this shit.
+SQL?
+
+My next step is to make a tool to run on the json file that will pull out what I want
+based on either grade or area.
 """
 
 import json
 import requests
 import re
+import operator
+
 from bs4 import BeautifulSoup, SoupStrainer
 
 
@@ -78,6 +87,39 @@ def regex_search(page_text):
     else:
         return None
 
+# Finds the grade on the page 
+def grade_finder(request):
+    strainer = SoupStrainer(class_='inline-block mr-2')
+    grade = BeautifulSoup(request.text, parse_only=strainer, features='lxml')
+
+    text_for_grade = grade.find_all(text=True)
+    return text_for_grade[1]
+
+
+# Finds the area navigation tree on the page
+def navigation_tree(request):
+    nav_tree = []
+    strainer = SoupStrainer(class_='mb-half small text-warm')
+    navigation_tree = BeautifulSoup(request.text, parse_only=strainer, features='lxml')
+
+    for link in navigation_tree.find_all('a'):
+        nav_tree.append(link.get('href').rsplit('/', 1)[1])
+        
+    return nav_tree[2:4]
+
+
+# Makes a tuple to add to the list
+# Making the tuple is a waste of time as json kills it...
+# But I initially wanted a tuple so it couldnt change
+def tuple_maker(climb_link, request):
+    list_ = [climb_link]
+    nav_tree = navigation_tree(request)
+    list_ += nav_tree
+    grade = grade_finder(request)
+    list_.append(grade)
+    
+    return tuple(list_)
+
 
 # Parses out the description of a climb 
 def awesome_climb(links_to_climbs):
@@ -92,10 +134,14 @@ def awesome_climb(links_to_climbs):
         description = climb_text.find_all(class_='fr-view')
 
         awesome_climb = regex_search(description)
+
         if awesome_climb is not None:
-            off_width_links.append(climb)
+            off_width_links.append(tuple_maker(climb, res))
         else:
             continue
+        
+    off_width_links.sort(key = operator.itemgetter(1, 2, -1))
+    print(off_width_links)
     return off_width_links
 
 
@@ -108,8 +154,8 @@ def main():
 
     # Goes through climb links to search for regex
     off_widths = awesome_climb(climb_links)
-
-    with open('off_width.json', 'w') as climb_file:
+    print(len(off_widths))
+    with open('test.json', 'w') as climb_file:
         json.dump(off_widths,climb_file)
 
 
