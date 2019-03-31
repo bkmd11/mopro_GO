@@ -87,12 +87,14 @@ def regex_search(page_text):
     else:
         return None
 
+
 # Finds the grade on the page 
 def grade_finder(request):
     strainer = SoupStrainer(class_='inline-block mr-2')
     grade = BeautifulSoup(request.text, parse_only=strainer, features='lxml')
 
     text_for_grade = grade.find_all(text=True)
+
     return text_for_grade[1]
 
 
@@ -108,17 +110,15 @@ def navigation_tree(request):
     return nav_tree[2:4]
 
 
-# Makes a tuple to add to the list
-# Making the tuple is a waste of time as json kills it...
-# But I initially wanted a tuple so it couldnt change
-def tuple_maker(climb_link, request):
+# Makes a list to add to the big list
+def list_maker(climb_link, request):
     list_ = [climb_link]
     nav_tree = navigation_tree(request)
     list_ += nav_tree
     grade = grade_finder(request)
     list_.append(grade)
     
-    return tuple(list_)
+    return list_
 
 
 # Parses out the description of a climb 
@@ -136,12 +136,12 @@ def awesome_climb(links_to_climbs):
         awesome_climb = regex_search(description)
 
         if awesome_climb is not None:
-            off_width_links.append(tuple_maker(climb, res))
+            off_width_links.append(list_maker(climb, res))
         else:
             continue
         
     off_width_links.sort(key = operator.itemgetter(1, 2, -1))
-    print(off_width_links)
+    
     return off_width_links
 
 
@@ -154,7 +154,7 @@ def main():
 
     # Goes through climb links to search for regex
     off_widths = awesome_climb(climb_links)
-    print(len(off_widths))
+    
     with open('test.json', 'w') as climb_file:
         json.dump(off_widths,climb_file)
 
