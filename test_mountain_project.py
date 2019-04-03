@@ -2,6 +2,7 @@ import unittest
 import requests
 from bs4 import BeautifulSoup, SoupStrainer
 import mountain_project
+import route_finder
 
 
 class TestAreaFinder(unittest.TestCase):

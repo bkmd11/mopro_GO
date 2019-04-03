@@ -64,7 +64,7 @@ def file_writer(sorted_list):
 
     climb_file.close()
 
-
+'''
 with open('off_width.json', 'r') as climbing_list:
     off_width_list = json.load(climbing_list)
     
@@ -88,3 +88,4 @@ print(len(climb_list))
     Writing the master list to a txt file currently. Sorting by grade is a little
     weird because .10 comes before .9, but whatevs.
 """
+'''

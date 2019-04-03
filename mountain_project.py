@@ -6,12 +6,10 @@ it to a file with links to the climbs page, ordered by grade.
 
 This will be my masterpiece.
 
-Kind of annoyed that json doesnt save this as a list of tuples... but I can deal.
-Maybe someday I will figure out a better way to save this shit.
-SQL?
-
 My next step is to make a tool to run on the json file that will pull out what I want
 based on either grade or area.
+
+I also want to add asyncio or threading
 """
 
 import json
@@ -65,6 +63,7 @@ def main_loop(area_links):
             x, y = link_finder(link)
             if x == 'area':
                 sub_area_links += y
+    
             else:
                 links_to_climbs += y
 
@@ -133,10 +132,13 @@ def awesome_climb(links_to_climbs):
         climb_text = BeautifulSoup(res.text, parse_only=strainer, features='lxml')
         description = climb_text.find_all(class_='fr-view')
 
+        print('Searching {} for awesomeness'.format(climb))
         awesome_climb = regex_search(description)
 
         if awesome_climb is not None:
             off_width_links.append(list_maker(climb, res))
+            print('Awesomeness asserted!')
+            
         else:
             continue
         
@@ -148,14 +150,17 @@ def awesome_climb(links_to_climbs):
 def main():
     # sets the initial area
     string, area = link_finder('https://www.mountainproject.com/area/105872225/new-hampshire')
-
+    print('entering main loop')
+    
     # Loops through every area and sub area
     climb_links = main_loop(area)
-
+    print('searching for climb awesomeness')
+    
     # Goes through climb links to search for regex
     off_widths = awesome_climb(climb_links)
+    print('Writing to file')
     
-    with open('test.json', 'w') as climb_file:
+    with open('off_width.json', 'w') as climb_file:
         json.dump(off_widths,climb_file)
 
 
