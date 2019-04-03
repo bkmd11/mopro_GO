@@ -34,30 +34,23 @@ def regex(search_term):
 
 
 # Takes a list of climbs and searches for a given criteria term
-#### This function can return things that do not meet the desired regex...
-#### . has a special meaning in regex, so searching for grade doesnt work
-#### maybe listify the string, find the . index, then insert before that...
-#### probably way over complicated...
-#### I could just be self aware of the bug and work with it since nobody
-#### else will ever use this POS
 def find_by_criteria(list_of_climbs):
-    search_term = regex(sys.argv[1])
+    search_term = regex(sys.argv[1])   # Must add \ for . in grade
 
     filtered_list = list(filter(search_term.search, list_of_climbs))
 
     return filtered_list
 
-"""
-# Currently my main body for my shitty testing
-with open('off_width.json', 'r') as file:
-    climbing_list = json.load(file)
+
+def main():
+    with open('off_width.json', 'r') as file:
+        climbing_list = json.load(file)
+
+    x = list(filter(find_by_criteria, climbing_list))
+
+    for i in x:
+        print(i[0])
 
 
-x = list(filter(find_by_criteria, climbing_list))
-
-for i in x:
-    pprint.pprint(i)
-#pprint.pprint(x)
-
-
-"""
+if __name__ == '__main__':
+    main()
