@@ -77,7 +77,7 @@ def main_loop(area_links):
 
 # A regex for off-widths
 def regex_search(page_text):
-    climbing_term = re.compile(r'off width|off-width|chimney| ow ', re.I)
+    climbing_term = re.compile(r'off width|off-width|chimney| ow , offwidth', re.I)
     awesome_climb = climbing_term.search(str(page_text[0]))
 
     # If regex is found on page do the thing.

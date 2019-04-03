@@ -26,6 +26,7 @@ Make an area/sub area finder that considers case and extra symbols
 """
 
 
+# Makes the user input into a regex to find variations of grade
 def regex(search_term):
     search_word = '{}.*'.format(search_term)
     regex = re.compile(search_word)
