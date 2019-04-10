@@ -1,7 +1,7 @@
 #! python3
 
 import unittest
-import route_finder
+from scraper import route_finder
 
 
 class TestRouteFinder(unittest.TestCase):

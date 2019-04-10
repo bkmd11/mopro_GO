@@ -1,8 +1,7 @@
 import unittest
 import requests
 from bs4 import BeautifulSoup, SoupStrainer
-import mountain_project
-import route_finder
+from scraper import mountain_project
 
 
 class TestAreaFinder(unittest.TestCase):
@@ -48,5 +47,6 @@ class TestClimbFinder(unittest.TestCase):
         result = mountain_project.climb_finder(page_links)
         self.assertFalse(result)
 
-if __name__== '__main__':
+
+if __name__ == '__main__':
     unittest.main()
