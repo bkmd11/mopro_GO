@@ -1,5 +1,3 @@
-#! python3
-
 """This is a tool to work with the data gathered by my web scraper. It will be able
 to search a json file for the climbs that meet a given criteria, whether that is
 location or grade, could also go for trad/sport/boulder.

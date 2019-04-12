@@ -1,5 +1,3 @@
-#! python3
-
 """ The goal of this project is to find all the off width climbs on mountain
 project. It will use requests and BeautifulSoup to gather this info and save
 it to a file with links to the climbs page, ordered by grade. 
