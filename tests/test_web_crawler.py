@@ -5,7 +5,7 @@ my methods. setup() and tearDown() might be a good place to look"""
 import unittest
 import requests
 from bs4 import BeautifulSoup, SoupStrainer
-from scraper import mountain_project
+from scraper import web_crawler
 
 
 class TestAreaFinder(unittest.TestCase):
@@ -16,7 +16,7 @@ class TestAreaFinder(unittest.TestCase):
         mp_sidebar = SoupStrainer(class_='mp-sidebar')
         page_links = BeautifulSoup(request.text, parse_only=mp_sidebar, features='lxml')
 
-        result = mountain_project.area_finder(page_links)
+        result = web_crawler.area_finder(page_links)
         self.assertTrue(result)
 
     def test_area_finder_false(self):
@@ -26,7 +26,7 @@ class TestAreaFinder(unittest.TestCase):
         mp_sidebar = SoupStrainer(class_='mp-sidebar')
         page_links = BeautifulSoup(request.text, parse_only=mp_sidebar, features='lxml')
 
-        result = mountain_project.area_finder(page_links)
+        result = web_crawler.area_finder(page_links)
         self.assertFalse(result)
 
 
@@ -38,7 +38,7 @@ class TestClimbFinder(unittest.TestCase):
         mp_sidebar = SoupStrainer(class_='mp-sidebar')
         page_links = BeautifulSoup(request.text, parse_only=mp_sidebar, features='lxml')
 
-        result = mountain_project.climb_finder(page_links)
+        result = web_crawler.climb_finder(page_links)
         self.assertTrue(result)
 
     def test_climb_finder_false(self):
@@ -48,7 +48,7 @@ class TestClimbFinder(unittest.TestCase):
         mp_sidebar = SoupStrainer(class_='mp-sidebar')
         page_links = BeautifulSoup(request.text, parse_only=mp_sidebar, features='lxml')
 
-        result = mountain_project.climb_finder(page_links)
+        result = web_crawler.climb_finder(page_links)
         self.assertFalse(result)
 
 
