@@ -1,3 +1,7 @@
+"""I want to figure out how to do these tests without calling all the requests inside
+my methods. setup() and tearDown() might be a good place to look"""
+
+
 import unittest
 import requests
 from bs4 import BeautifulSoup, SoupStrainer

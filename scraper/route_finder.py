@@ -10,16 +10,10 @@ import sys
 import re
 
 
-"""Trying to make this search for grade variations with a regex
-example: V0+, 510d. Also my grade data from mountain_project.py 
-has a blank space at the end. Could add a strip to remove the bug
-or just deal with it in this regex
-
-It works as a CLI taking sys.argv[1] as the regex
+"""It works as a CLI taking sys.argv[1] as the regex
 
 
 IDEA:
-Make a grade finder that adds \ to .
 Make an area/sub area finder that considers case and extra symbols
 """
 

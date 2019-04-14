@@ -1,9 +1,12 @@
+"""I need to figure out how to run tests when a sys.arg is
+required"""
+
 import unittest
 
 from scraper import route_finder
 
 
-class TestRouteFinder(unittest.TestCase):
+class TestRouteFinderRegex(unittest.TestCase):
     def test_grade_regex_true(self):
         result = route_finder.regex('5.11')
         self.assertIsNotNone(result.search('5.11A '))
