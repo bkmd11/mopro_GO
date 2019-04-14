@@ -26,6 +26,13 @@ def regex(search_term):
     return regex
 
 
+# Adds an escape charecter for the '.' in a grade
+def escape_character(climbing_grade):
+    list_ = list(climbing_grade)
+    add_backslash = [x if x != '.' else '\\.' for x in list_]
+    string = ''.join(add_backslash)
+
+    return string
 # Takes a list of climbs and searches for a given criteria term
 def find_by_criteria(list_of_climbs):
     search_term = regex(sys.argv[1])   # Must add \ for . in grade
