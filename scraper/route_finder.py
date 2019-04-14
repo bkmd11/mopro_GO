@@ -20,19 +20,23 @@ Make an area/sub area finder that considers case and extra symbols
 
 # Makes the user input into a regex to find variations of grade
 def regex(search_term):
+    if '.' in search_term:
+        search_term = escape_character(search_term)
     search_word = '{}.*'.format(search_term)
     regex = re.compile(search_word)
 
     return regex
 
 
-# Adds an escape charecter for the '.' in a grade
+# Adds an escape character for the '.' in a grade
 def escape_character(climbing_grade):
     list_ = list(climbing_grade)
     add_backslash = [x if x != '.' else '\\.' for x in list_]
     string = ''.join(add_backslash)
 
     return string
+
+
 # Takes a list of climbs and searches for a given criteria term
 def find_by_criteria(list_of_climbs):
     search_term = regex(sys.argv[1])   # Must add \ for . in grade
