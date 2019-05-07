@@ -15,6 +15,7 @@ import re
 
 IDEA:
 Make an area/sub area finder that considers case and extra symbols
+Need to make this more user friendly
 """
 
 
