@@ -23,6 +23,11 @@ def climb_finder(page_links):
 
 
 # Determine if link is to a route or a climb
+"""I want to make this into a generator, but I am struggling with
+the concept. I may need to make my climb_finder and area_finder into 
+generators instead...
+Yet again I am a tad overwhelmed with more intermediate stuff
+"""
 def link_finder(web_address):
     request = requests.get(web_address)
     request.raise_for_status()
