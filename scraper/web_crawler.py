@@ -16,7 +16,7 @@ def area_finder(page_links):
 def climb_finder(page_links):
     for link in page_links.find_all('a'):
         climb_link = link.get('href')
-        if 'com/route/' in climb_link:
+        if 'com/route/' in climb_link:    # Removes extra links that get pulled
             yield climb_link
         else:
             continue
