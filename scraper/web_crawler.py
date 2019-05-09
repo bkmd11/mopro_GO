@@ -6,28 +6,23 @@ from bs4 import BeautifulSoup, SoupStrainer
 
 # Finds links to areas
 def area_finder(page_links):
-    areas = []
     for link in page_links.find_all('a'):
-        areas.append(link.get('href'))
-    areas = [link for link in areas if '.com/area/' in link]
-    return areas
+        area_link = link.get('href')
+
+        yield area_link
 
 
 # Finds all the climbs on the web page
 def climb_finder(page_links):
-    climbs = []
     for link in page_links.find_all('a'):
-        climbs.append(link.get('href'))
-    climbs = [link for link in climbs if 'com/route/' in link]  # Takes out extra links that get pulled
-    return climbs
+        climb_link = link.get('href')
+        if 'com/route/' in climb_link:
+            yield climb_link
+        else:
+            continue
 
 
 # Determine if link is to a route or a climb
-"""I want to make this into a generator, but I am struggling with
-the concept. I may need to make my climb_finder and area_finder into 
-generators instead...
-Yet again I am a tad overwhelmed with more intermediate stuff
-"""
 def link_finder(web_address):
     request = requests.get(web_address)
     request.raise_for_status()
@@ -43,22 +38,18 @@ def link_finder(web_address):
         return 'climb', climbing_links
 
 
-def main_loop(area_links):
-    sub_area_links = []
+def main_loop(link):
     links_to_climbs = []
+    area_links = [link]
 
-    while True:
-        for link in area_links:
-            x, y = link_finder(link)
+    while area_links:
+        found_link = area_links.pop(0)
+        x, y = link_finder(found_link)
+        for link in y:
             if x == 'area':
-                sub_area_links += y
+                area_links.append(link)
 
             else:
-                links_to_climbs += y
+                links_to_climbs.append(link)
 
-        area_links = sub_area_links
-        if len(area_links) == 0:
-            break
-
-        sub_area_links = []
     return links_to_climbs
