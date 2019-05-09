@@ -17,12 +17,8 @@ import page_search
 
 
 def main():
-    # sets the initial area
-    string, area = web_crawler.link_finder('https://www.mountainproject.com/area/105946021/blair-woods')
-    print('entering main loop')
-    
     # Loops through every area and sub area
-    climb_links = web_crawler.main_loop(area)
+    climb_links = web_crawler.main_loop('https://www.mountainproject.com/area/105946021/blair-woods')
     print('searching for climb awesomeness')
     
     # Goes through climb links to search for regex
