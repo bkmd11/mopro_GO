@@ -1,7 +1,3 @@
-"""I want to figure out how to do these tests without calling all the requests inside
-my methods. setup() and tearDown() might be a good place to look"""
-
-
 import unittest
 import requests
 from bs4 import BeautifulSoup, SoupStrainer
@@ -72,14 +68,11 @@ class TestClimbFinderIgnoresNonRouteLinks(unittest.TestCase):
         mp_sidebar = SoupStrainer(class_='mp-sidebar')
         self.page_links = BeautifulSoup(request.text, parse_only=mp_sidebar, features='lxml')
 
-    #
+    # Tests that nothing gets put into the generator object when the links aren't a route
     def test_climb_finder_skipping_non_route_links(self):
-        pass
-
-
-"""I am struggling with how to think about testing this. I get a StopIteration error
-when the generator object is done iterating... I may need to look into a different test
-method that isn't unittest. Like pytest or something..."""
+        gen_obj = web_crawler.climb_finder(self.page_links)
+        with self.assertRaises(StopIteration):
+            next(gen_obj)
 
 
 if __name__ == '__main__':
