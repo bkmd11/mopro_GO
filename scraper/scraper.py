@@ -12,8 +12,8 @@ I also want to add asyncio or threading
 
 import json
 
-import web_crawler
-import page_search
+from scraper import web_crawler
+from scraper import page_search
 
 
 def main():
