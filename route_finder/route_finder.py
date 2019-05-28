@@ -5,9 +5,9 @@ location or grade, could also go for trad/sport/boulder.
 
 """
 import json
-import pprint
-import sys
 import re
+
+from route_finder import option_finder
 
 
 """It works as a CLI taking sys.argv[1] as the regex
@@ -24,7 +24,7 @@ def regex(search_term):
     if '.' in search_term:
         search_term = escape_character(search_term)
     search_word = f'{search_term}.*'
-    regex = re.compile(search_word)
+    regex = re.compile(search_word, re.I)
 
     return regex
 
@@ -43,8 +43,8 @@ def escape_character(climbing_grade):
 
 
 # Takes a list of climbs and searches for a given criteria term
-def find_by_criteria(list_of_climbs):
-    search_term = regex(sys.argv[1])   # Must add \ for . in grade
+def find_by_criteria(search_criteria, list_of_climbs):
+    search_term = regex(search_criteria)
 
     filtered_list = list(filter(search_term.search, list_of_climbs))
 
