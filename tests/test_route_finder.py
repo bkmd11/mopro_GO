@@ -34,5 +34,29 @@ class TestRouteFinderRegex(unittest.TestCase):
         self.assertIsNone(result.search('cannon'))
 
 
+# Tests escape_character() function
+class TestEscapeCharacter(unittest.TestCase):
+
+    # Tests that it works
+    def test_escape_character_works(self):
+        result = route_finder.escape_character('5.12')
+        self.assertEqual(result, '5\\.12')
+
+    # Tests that it won't add escape character if its not needed
+    def test_escape_character_not_added(self):
+        result = route_finder.escape_character('spam')
+        self.assertEqual(result, 'spam')
+
+    # Tests that it will add multiple escape characters
+    def test_escape_character_catches_all_dots(self):
+        result = route_finder.escape_character('5.11.3')
+        self.assertEqual(result, '5\\.11\\.3')
+
+    # Tests to see what happens if the escape characters get added as input
+    def test_escape_characters_already_added(self):
+        result = route_finder.escape_character('5\\.11')
+        self.assertEqual(result, '5\\.11')
+
+
 if __name__ == '__main__':
     unittest.main()

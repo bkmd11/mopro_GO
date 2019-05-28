@@ -19,7 +19,6 @@ from scraper import page_search
 def main():
     # Loops through every area and sub area
     climb_links = web_crawler.main_loop('https://www.mountainproject.com/area/105946021/blair-woods')
-    print('searching for climb awesomeness')
     
     # Goes through climb links to search for regex
     off_widths = page_search.awesome_climb(climb_links)

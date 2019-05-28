@@ -26,7 +26,7 @@ def grade_finder(request):
 
     text_for_grade = grade.find_all(text=True)
 
-    return text_for_grade[1]
+    return text_for_grade[1]    # The grade will have a space after it
 
 
 # Finds the area navigation tree on the page
@@ -64,7 +64,7 @@ def awesome_climb(links_to_climbs):
         climb_text = BeautifulSoup(res.text, parse_only=strainer, features='lxml')
         description = climb_text.find_all(class_='fr-view')
 
-        print('Searching {} for awesomeness'.format(climb))
+        print(f'Searching {climb} for awesomeness')
         awesome_climb = regex_search(description)
 
         if awesome_climb is not None:
