@@ -35,7 +35,8 @@ class TestRegexSearchOffWidth(unittest.TestCase):
     def test_list_maker(self):
         result = page_search.list_maker("https://www.mountainproject.com/route/105941462/climbers-corner", self.res)
         self.assertEqual(result,
-            ["https://www.mountainproject.com/route/105941462/climbers-corner", "pawtuckaway", "upper-cliff", "5.10 "])
+                         ["https://www.mountainproject.com/route/105941462/climbers-corner", "pawtuckaway",
+                          "upper-cliff", "5.10 "])
 
 
 if __name__ == '__main__':

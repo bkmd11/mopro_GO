@@ -3,7 +3,7 @@ required"""
 
 import unittest
 
-from scraper import route_finder
+from route_finder import route_finder
 
 
 # Testing of my regex searching function
@@ -32,6 +32,16 @@ class TestRouteFinderRegex(unittest.TestCase):
     def test_area_regex_false(self):
         result = route_finder.regex('pawtuckaway')
         self.assertIsNone(result.search('cannon'))
+
+    # Tests that the regex is case insensitive
+    def test_area_regex_ignore_case(self):
+        result = route_finder.regex('PawtuCKaway')
+        self.assertIsNotNone(result.search('pawtuckaway'))
+
+    # Tests to see if case matters in item being searched
+    def test_area_regex_ignore_case_in_item(self):
+        result = route_finder.regex('cannon')
+        self.assertIsNotNone(result.search('CannoN'))
 
 
 # Tests escape_character() function
