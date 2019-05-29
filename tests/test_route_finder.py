@@ -3,7 +3,7 @@ required"""
 
 import unittest
 
-from route_search_tool import route_finder
+from route_finder import route_finder
 
 
 # Testing of my regex searching function
