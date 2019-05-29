@@ -6,16 +6,18 @@ location or grade, could also go for trad/sport/boulder.
 """
 import json
 import re
+import sys
 
 from route_finder import option_finder
 
 
 """It works as a CLI taking sys.argv[1] as the regex
+        But I am adding option_finder() to change that
 
 
 IDEA:
-Make an area/sub area finder that considers case and extra symbols
 Need to make this more user friendly
+I am going to make a GUI for this when my brain is actually working
 """
 
 
@@ -43,8 +45,8 @@ def escape_character(climbing_grade):
 
 
 # Takes a list of climbs and searches for a given criteria term
-def find_by_criteria(search_criteria, list_of_climbs):
-    search_term = regex(search_criteria)
+def find_by_criteria(list_of_climbs):
+    search_term = regex()
 
     filtered_list = list(filter(search_term.search, list_of_climbs))
 
@@ -54,6 +56,8 @@ def find_by_criteria(search_criteria, list_of_climbs):
 def main():
     with open('off_width.json', 'r') as file:
         climbing_list = json.load(file)
+
+    criteria = option_finder.criteria_selector(climbing_list)
 
     x = list(filter(find_by_criteria, climbing_list))
 
