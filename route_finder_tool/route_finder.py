@@ -1,5 +1,5 @@
 #! python3
-"""This is a tool to work with the data gathered by my web scraper. It will be able
+"""This is a tool to work with the data gathered by my web scraper_tool. It will be able
 to search a json file for the climbs that meet a given criteria, whether that is
 location or grade, could also go for trad/sport/boulder.
 
@@ -7,9 +7,8 @@ location or grade, could also go for trad/sport/boulder.
 """
 import json
 import re
-import sys
 
-from route_finder import option_finder
+from route_finder_tool import option_finder
 
 
 """It works as a CLI taking sys.argv[1] as the regex
@@ -47,14 +46,15 @@ def escape_character(climbing_grade):
 
 # Takes a list of climbs and searches for a given criteria term
 def find_by_criteria(list_of_climbs):
-    search_term = regex()
+    global criteria
+    search_term = regex(criteria)
 
     filtered_list = list(filter(search_term.search, list_of_climbs))
 
     return filtered_list
 
 
-def main():
+if __name__ == '__main__':
     with open('off_width.json', 'r') as file:
         climbing_list = json.load(file)
 
@@ -64,7 +64,3 @@ def main():
 
     for i in x:
         print(i[0])
-
-
-if __name__ == '__main__':
-    main()

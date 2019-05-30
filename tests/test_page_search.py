@@ -2,7 +2,7 @@ import unittest
 import requests
 from bs4 import BeautifulSoup, SoupStrainer
 
-from scraper import page_search
+from scraper_tool import page_search
 
 
 # This tests page_search functions for off_width regex

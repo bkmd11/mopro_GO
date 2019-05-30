@@ -1,7 +1,7 @@
 import unittest
 import requests
 from bs4 import BeautifulSoup, SoupStrainer
-from scraper import web_crawler
+from scraper_tool import web_crawler
 
 
 # This tests my area_finder() function.

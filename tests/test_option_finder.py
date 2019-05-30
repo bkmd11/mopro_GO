@@ -2,7 +2,7 @@
 import unittest
 import json
 
-from route_finder import option_finder
+from route_finder_tool import option_finder
 
 
 # Testing that things actually work for this feature

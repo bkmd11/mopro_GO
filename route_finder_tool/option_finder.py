@@ -20,6 +20,8 @@ def sub_area_options(area, json_file):
     for i in json_file:
         if area in i:
             list_.append(i[2])
+    list_ = list(dict.fromkeys(list_))
+    list_.sort()
 
     return list_
 
@@ -30,6 +32,8 @@ def grade_options(area, json_file):
     for i in json_file:
         if area in i:
             list_.append(i[-1])
+    list_ = list(dict.fromkeys(list_))
+    list_.sort()
 
     return list_
 
