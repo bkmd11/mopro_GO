@@ -2,11 +2,12 @@
 """This is a tool to work with the data gathered by my web scraper_tool. It searches a json file
 for criteria such as area, sub area, or grade.
 
-
+Currently I have it set up somewhat redundantly. The option_finder will narrow down area and grade,
+and returns the criteria and a narrower list that gets fed into find_by_criteria.
+The regex and escape_character are designed to ignore series of numbers in the http address and for the . in grades.
 """
 import json
 import re
-
 from route_finder_tool import option_finder
 
 
@@ -51,25 +52,18 @@ def find_by_criteria(list_of_climbs):
     return filtered_list
 
 
-""" option_finder is just a complicated way of getting one regex, not narrowing things down...
-I need to figure out how to make it return multiple regex expressions to find a more specific 
-list of climbs
-
-Maybe put my filter into option_finder
-Though I feel I am being redundant with option_finder and find_by_criteria
-filter through each stage
-
-I am resolving the same problem in a dumb way. option_finder either needs to return the filtered list
-with find_by_criteria being deleted, or I need to modify find_by_criteria... 
-I prefer the prior currently"""
-
 if __name__ == '__main__':
     with open('off_width.json', 'r') as file:
         climbing_list = json.load(file)
+    list_ = []
 
-    criteria = option_finder.criteria_selector(climbing_list)
+    criteria, area = option_finder.criteria_selector(climbing_list)
 
-    x = list(filter(find_by_criteria, climbing_list))
+    for i in climbing_list:
+        if area in i:
+            list_.append(i)
+
+    x = list(filter(find_by_criteria, list_))
 
     for i in x:
         print(i[0])

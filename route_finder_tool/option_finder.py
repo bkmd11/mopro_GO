@@ -54,4 +54,5 @@ def criteria_selector(json_file):
     pprint.pprint(grade_search)
     search_criteria = input('Make a selection from the list:\n')
 
-    return search_criteria
+    return search_criteria, area
+
