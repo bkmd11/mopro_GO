@@ -44,18 +44,14 @@ def criteria_selector(json_file):
     pprint.pprint(search_options)
     area = input('Make a selection from the list:\n')
 
-    narrower_search_options = sub_area_options(area, json_file)
-    pprint.pprint(narrower_search_options)
-    sub_area = input('Make a selection from the list:\n')
+    grade_or_area = input('Do you want to narrow down to "sub_area" or "grade"?\n')
+    if grade_or_area == 'sub_area':
+        narrower_search_options = sub_area_options(area, json_file)
+        pprint.pprint(narrower_search_options)
+        area = input('Make a selection from the list:\n')
 
-    grade_search = grade_options(sub_area, json_file)
+    grade_search = grade_options(area, json_file)
     pprint.pprint(grade_search)
     search_criteria = input('Make a selection from the list:\n')
 
     return search_criteria
-
-
-
-
-
-

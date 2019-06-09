@@ -1,7 +1,6 @@
 #! python3
-"""This is a tool to work with the data gathered by my web scraper_tool. It will be able
-to search a json file for the climbs that meet a given criteria, whether that is
-location or grade, could also go for trad/sport/boulder.
+"""This is a tool to work with the data gathered by my web scraper_tool. It searches a json file
+for criteria such as area, sub area, or grade.
 
 
 """
@@ -11,12 +10,10 @@ import re
 from route_finder_tool import option_finder
 
 
-"""It works as a CLI taking sys.argv[1] as the regex
-        But I am adding option_finder() to change that
-
-
+"""
 IDEA:
-Need to make this more user friendly
+Make option finder work better...
+    it needs to give the option for area or grade
 I am going to make a GUI for this when my brain is actually working
 """
 
@@ -53,6 +50,18 @@ def find_by_criteria(list_of_climbs):
 
     return filtered_list
 
+
+""" option_finder is just a complicated way of getting one regex, not narrowing things down...
+I need to figure out how to make it return multiple regex expressions to find a more specific 
+list of climbs
+
+Maybe put my filter into option_finder
+Though I feel I am being redundant with option_finder and find_by_criteria
+filter through each stage
+
+I am resolving the same problem in a dumb way. option_finder either needs to return the filtered list
+with find_by_criteria being deleted, or I need to modify find_by_criteria... 
+I prefer the prior currently"""
 
 if __name__ == '__main__':
     with open('off_width.json', 'r') as file:
