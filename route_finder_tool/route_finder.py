@@ -8,6 +8,8 @@ The regex and escape_character are designed to ignore series of numbers in the h
 """
 import json
 import re
+import pprint
+
 from route_finder_tool import option_finder
 
 
@@ -52,18 +54,45 @@ def find_by_criteria(list_of_climbs):
     return filtered_list
 
 
+# Makes a filtered list of the areas from a given criteria
+def area_slimmer_downer(area, list_of_climbs):
+    list_ = [i for i in list_of_climbs if area in i]
+
+    return list_
+
+
 if __name__ == '__main__':
     with open('off_width.json', 'r') as file:
         climbing_list = json.load(file)
-    list_ = []
 
-    criteria, area = option_finder.criteria_selector(climbing_list)
+    choice = input('"grade" or "area":\n')
 
-    for i in climbing_list:
-        if area in i:
-            list_.append(i)
+    if choice == 'area':
+        narrower_search_options = option_finder.area_options(climbing_list)
+        pprint.pprint(narrower_search_options)
 
-    x = list(filter(find_by_criteria, list_))
+        area = input('Make a selection from the list:\n')
+        climbing_list = area_slimmer_downer(area, climbing_list)
+
+        choice = input('"sub_area" or "grade":\n')
+
+        if choice == 'sub_area':
+            narrower_search_options = option_finder.sub_area_options(area, climbing_list)
+            pprint.pprint(narrower_search_options)
+            area = input('Make a selection from the list:\n')
+
+            climbing_list = area_slimmer_downer(area, climbing_list)
+
+    grades = option_finder.grade_options(climbing_list)
+    pprint.pprint(grades)
+
+    criteria = input('Make a selection from the list:\n')
+
+    x = list(filter(find_by_criteria, climbing_list))
 
     for i in x:
         print(i[0])
+
+""" I've made this work a bit better. In option finder.py I eliminated a couple things I didnt like.
+Error prone still, but I can make it work for me. Might break if I look for more than grade...
+"""
