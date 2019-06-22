@@ -3,6 +3,7 @@ import requests
 
 from bs4 import BeautifulSoup, SoupStrainer
 
+# TODO: Make this program run with asyncio
 
 # Finds links to areas
 def area_finder(page_links):

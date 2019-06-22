@@ -1,13 +1,9 @@
 #! python3
-import pprint
 
 
 # Finds all the areas
-def area_options(json_file):
-    list_ = []
-    for i in json_file:
-        list_.append(i[1])
-
+def area_options(original_list):
+    list_ = [i[1] for i in original_list]
     list_ = list(dict.fromkeys(list_))
     list_.sort()
 
@@ -15,11 +11,8 @@ def area_options(json_file):
 
 
 # Finds all the sub areas in the selected area
-def sub_area_options(area, json_file):
-    list_ = []
-    for i in json_file:
-        if area in i:
-            list_.append(i[2])
+def sub_area_options(original_list):
+    list_ = [i[2] for i in original_list]
     list_ = list(dict.fromkeys(list_))
     list_.sort()
 
@@ -27,10 +20,8 @@ def sub_area_options(area, json_file):
 
 
 # Finds all the grades in an area
-def grade_options(json_file):
-    list_ = []
-    for i in json_file:
-        list_.append(i[-1])
+def grade_options(original_list):
+    list_ = [i[-1] for i in original_list]
     list_ = list(dict.fromkeys(list_))
     list_.sort()
 

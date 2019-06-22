@@ -25,6 +25,7 @@ class TestOptionFinder(unittest.TestCase):
         self.assertIn('pawtuckaway', result)
         self.assertIn('cannon-cliff', result)
 
+    # TODO: Fix these tests too
     # Testing that the sub_area options works
     def test_sub_area_options_works(self):
         result = option_finder.sub_area_options('cannon-cliff', self.json_file)
@@ -37,6 +38,7 @@ class TestOptionFinder(unittest.TestCase):
 
         self.assertEqual(result, ['big-wall'])
 
+    # todo fix grade_option tests
     # Tests my grade_option finder pulls the right grade in a given area
     def test_grade_options_area(self):
         result = option_finder.grade_options('cannon-cliff', self.json_file)

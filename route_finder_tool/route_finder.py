@@ -12,13 +12,7 @@ import pprint
 
 from route_finder_tool import option_finder
 
-
-"""
-IDEA:
-Make option finder work better...
-    it needs to give the option for area or grade
-I am going to make a GUI for this when my brain is actually working
-"""
+# TODO: Make a GUI with sexy click buttons
 
 
 # Makes the user input into a regex to find variations of grade
@@ -55,8 +49,8 @@ def find_by_criteria(list_of_climbs):
 
 
 # Makes a filtered list of the areas from a given criteria
-def area_slimmer_downer(area, list_of_climbs):
-    list_ = [i for i in list_of_climbs if area in i]
+def area_slimmer_downer(area_option, list_of_climbs):
+    list_ = [i for i in list_of_climbs if area_option in i]
 
     return list_
 
@@ -77,7 +71,7 @@ if __name__ == '__main__':
         choice = input('"sub_area" or "grade":\n')
 
         if choice == 'sub_area':
-            narrower_search_options = option_finder.sub_area_options(area, climbing_list)
+            narrower_search_options = option_finder.sub_area_options(climbing_list)
             pprint.pprint(narrower_search_options)
             area = input('Make a selection from the list:\n')
 

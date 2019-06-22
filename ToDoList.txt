@@ -1,9 +1,0 @@
-I changed my option_finder.grade_options to just take a list, so that broke the tests.
-This results in me needing to redo my tests again, and figure out how to make this better.
-
-I also want to make the crawler asyncio which requires a asynchttp to replace requests
-
-I also want to make a gui for route_finder with sexy click buttons
-
-And I want to find a better way to make a todo list.
-try google
