@@ -6,6 +6,8 @@ import operator
 
 from bs4 import BeautifulSoup, SoupStrainer
 
+# Todo: A lot of this can change or be deleted once the async stuff is worked out
+
 
 # A regex for off-widths
 def regex_search(page_text):
@@ -22,7 +24,7 @@ def regex_search(page_text):
 # Finds the grade on the page
 def grade_finder(request):
     strainer = SoupStrainer(class_='inline-block mr-2')
-    grade = BeautifulSoup(request.text, parse_only=strainer, features='lxml')
+    grade = BeautifulSoup(request, parse_only=strainer, features='lxml')
 
     text_for_grade = grade.find_all(text=True)
 
@@ -33,7 +35,7 @@ def grade_finder(request):
 def navigation_tree(request):
     nav_tree = []
     strainer = SoupStrainer(class_='mb-half small text-warm')
-    navigation_tree = BeautifulSoup(request.text, parse_only=strainer, features='lxml')
+    navigation_tree = BeautifulSoup(request, parse_only=strainer, features='lxml')
 
     for link in navigation_tree.find_all('a'):
         nav_tree.append(link.get('href').rsplit('/', 1)[1])

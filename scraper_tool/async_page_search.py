@@ -1,21 +1,19 @@
 import asyncio
-import aiofiles
-import aiohttp
 import re
 
-from bs4 import BeautifulSoup, SoupStrainer
+from scraper_tool import page_search
 from aiohttp import ClientSession
 
-regex = re.compile('off-width')
+regex = re.compile('off-width')   # todo: update this once I am up and running
 
 
 async def page_request(climb_url, session, **kwargs):
     """Gets the url request so the page can be searched"""
     resp = await session.request(method='GET', url=climb_url, **kwargs)
-    print(type(resp))
     resp.raise_for_status()
 
     html = await resp.text()
+
     return html
 
 
@@ -28,14 +26,18 @@ async def parse(climb_url, session, **kwargs):
 
     if len(awesome_climb) >= 1:
         found.add(climb_url)
-    return found
+
+    return found, html
 
 
-async def display_awesome_climbs(climb_url, **kwargs):
-    climbs = await parse(climb_url, **kwargs)
+async def write_awesome_climbs(climb_url, **kwargs):
+    """Writes the list of climbs to a file for later use"""
+    # todo: figure out json with async stuff
+    climbs, html = await parse(climb_url, **kwargs)
     for climb in climbs:
-
-        print(climb)
+        climb_info = page_search.list_maker(climb, html)    # todo: passing html text into beautiful soup worked
+                                                                # look into doing that for the web_crawler
+        print(climb_info)
 
 
 async def crawler(climb_url_list, **kwargs):
@@ -43,9 +45,14 @@ async def crawler(climb_url_list, **kwargs):
     async with ClientSession() as session:
         tasks = []
         for climb_url in climb_url_list:
-            tasks.append(display_awesome_climbs(climb_url, session=session, **kwargs))
+            tasks.append(write_awesome_climbs(climb_url, session=session, **kwargs))
 
         await asyncio.gather(*tasks)
+
+
+def main(climb_url_list):
+    """The main program to be called by scraper"""
+    asyncio.run(crawler(climb_url_list))
 
 
 if __name__ == '__main__':

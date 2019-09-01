@@ -13,7 +13,7 @@ I also want to add asyncio or threading
 import json
 
 from scraper_tool import web_crawler
-from scraper_tool import page_search
+from scraper_tool import async_page_search
 
 
 def main():
@@ -21,7 +21,7 @@ def main():
     climb_links = web_crawler.main_loop('https://www.mountainproject.com/area/105946021/blair-woods')
     
     # Goes through climb links to search for regex
-    off_widths = page_search.awesome_climb(climb_links)
+    off_widths = async_page_search.main(climb_links)
     print('Writing to file')
     
     with open('test.json', 'w') as climb_file:
