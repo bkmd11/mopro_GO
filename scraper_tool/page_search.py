@@ -70,7 +70,7 @@ def awesome_climb(links_to_climbs):
         awesome_climb = regex_search(description)
 
         if awesome_climb is not None:
-            off_width_links.append(list_maker(climb, res))
+            off_width_links.append(list_maker(climb, res.text))
             print('Awesomeness asserted!')
 
         else:

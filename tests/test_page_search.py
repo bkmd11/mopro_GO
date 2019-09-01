@@ -23,17 +23,19 @@ class TestRegexSearchOffWidth(unittest.TestCase):
 
     # Tests that it finds the right grade.
     def test_grade_finder(self):
-        result = page_search.grade_finder(self.res)
+        result = page_search.grade_finder(self.res.text)
         self.assertEqual(result, '5.10 ')
 
     # Tests that it pulls what I want out of the navigation tree
     def test_nav_tree(self):
-        result = page_search.navigation_tree(self.res)
+        result = page_search.navigation_tree(self.res.text)
         self.assertEqual(result, ["pawtuckaway", "upper-cliff"])
 
     # This is an integration test of my list_maker()
     def test_list_maker(self):
-        result = page_search.list_maker("https://www.mountainproject.com/route/105941462/climbers-corner", self.res)
+        result = page_search.list_maker(
+            "https://www.mountainproject.com/route/105941462/climbers-corner", self.res.text
+        )
         self.assertEqual(result,
                          ["https://www.mountainproject.com/route/105941462/climbers-corner", "pawtuckaway",
                           "upper-cliff", "5.10 "])
