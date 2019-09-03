@@ -3,17 +3,14 @@ project. It will use requests and BeautifulSoup to gather this info and save
 it to a file with links to the climbs page, ordered by grade. 
 
 This will be my masterpiece.
-
-My next step is to make a tool to run on the json file that will pull out what I want
-based on either grade or area.
-
-I also want to add asyncio or threading
 """
 
 import json
 
 from scraper_tool import web_crawler
 from scraper_tool import async_page_search
+
+# Todo: make this run with asyncio too
 
 
 def main():

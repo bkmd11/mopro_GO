@@ -1,9 +1,9 @@
 #! python3
 import requests
+import time
 
 from bs4 import BeautifulSoup, SoupStrainer
 
-# TODO: Make this program run with asyncio
 
 # Finds links to areas
 def area_finder(page_links):
@@ -54,3 +54,10 @@ def main_loop(link):
                 links_to_climbs.append(link)
 
     return links_to_climbs
+
+
+if __name__ == '__main__':
+    start_time = time.time()
+    spam = main_loop('https://www.mountainproject.com/area/105929413/pawtuckaway')
+    print(len(spam))
+    print(f'{time.time()-start_time}')

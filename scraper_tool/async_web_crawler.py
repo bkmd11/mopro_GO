@@ -1,9 +1,11 @@
 import asyncio
 import re
+import time
 
 from bs4 import BeautifulSoup, SoupStrainer
 from aiohttp import ClientSession
 
+# Todo: docstrings for each function and clean up variable names for clarity
 
 HREF_RE = re.compile(r'href="(.*?)"')
 
@@ -77,4 +79,6 @@ async def main(url_list):
         await asyncio.gather(*tasks)
 
 if __name__ == '__main__':
+    start_time = time.time()
     asyncio.run(main(['https://www.mountainproject.com/area/105929413/pawtuckaway']))
+    print(f'{time.time()-start_time}')

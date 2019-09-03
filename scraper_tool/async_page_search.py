@@ -35,9 +35,9 @@ async def write_awesome_climbs(climb_url, **kwargs):
     # todo: figure out json with async stuff
     climbs, html = await parse(climb_url, **kwargs)
     for climb in climbs:
-        climb_info = page_search.list_maker(climb, html)    # todo: passing html text into beautiful soup worked
-                                                            #   look into doing that for the web_crawler
-        print(climb_info)
+        climb_info = page_search.list_maker(climb, html)
+
+    print(climb_info)
 
 
 async def crawler(climb_url_list, **kwargs):
