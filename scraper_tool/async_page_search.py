@@ -4,7 +4,7 @@ import re
 from scraper_tool import page_search
 from aiohttp import ClientSession
 
-regex = re.compile('off-width')   # todo: update this once I am up and running
+REGEX = re.compile('off-width')   # todo: update this once I am up and running
 
 
 async def page_request(climb_url, session, **kwargs):
@@ -22,7 +22,7 @@ async def parse(climb_url, session, **kwargs):
     found = set()
     html = await page_request(climb_url, session, **kwargs)
 
-    awesome_climb = regex.findall(html)
+    awesome_climb = REGEX.findall(html)
 
     if len(awesome_climb) >= 1:
         found.add(climb_url)
@@ -50,7 +50,7 @@ async def crawler(climb_url_list, **kwargs):
         await asyncio.gather(*tasks)
 
 
-def main(climb_url_list):
+async def main(climb_url_list):
     """The main program to be called by scraper"""
     asyncio.run(crawler(climb_url_list))
 
