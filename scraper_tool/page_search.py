@@ -3,6 +3,7 @@
 import requests
 import re
 import operator
+import time
 
 from bs4 import BeautifulSoup, SoupStrainer
 
@@ -81,3 +82,12 @@ def awesome_climb(links_to_climbs):
 
     return off_width_links
 
+
+if __name__ == '__main__':
+    start_time = time.time()
+    awesome_climb([
+        'https://www.mountainproject.com/route/106949198/short-stuff',
+        'https://www.mountainproject.com/route/105941458/obscene-phone-call',
+        'https://www.mountainproject.com/route/106540643/no-answer'
+    ])
+    print(f'{time.time()-start_time}')

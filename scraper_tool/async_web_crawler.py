@@ -5,45 +5,48 @@ import time
 from bs4 import BeautifulSoup, SoupStrainer
 from aiohttp import ClientSession
 
-# Todo: docstrings for each function and clean up variable names for clarity
 
-HREF_RE = re.compile(r'href="(.*?)"')
+URL_TAG = re.compile(r'href="(.*?)"')
 
 
-async def area_finder(page_links):
+async def area_finder(bs4_parsed_links_for_areas):
+    """If a link is an area, this pulls all of the sub-areas from it"""
     areas = []
-    for link in HREF_RE.findall(str(page_links)):
+    for link in URL_TAG.findall(str(bs4_parsed_links_for_areas)):
         areas.append(link)
     areas = [link for link in areas if 'com/area/' in link]
 
     return areas
 
 
-async def climb_finder(page_links):
+async def climb_finder(bs4_parsed_links_for_climbs):
+    """If a link is a climb, this pulls all of the other climbs from it"""
     climbs = []
-    for link in HREF_RE.findall(str(page_links)):
+    for link in URL_TAG.findall(str(bs4_parsed_links_for_climbs)):
         climbs.append(link)
     climbs = [link for link in climbs if 'com/route/' in link]
 
     return climbs
 
 
-async def get_request(url, session, **kwargs):
-    resp = await session.request(method='GET', url=url, **kwargs)
+async def get_request(mountain_project_url, session, **kwargs):
+    """This gets the request for the mountain_project_url"""
+    resp = await session.request(method='GET', url=mountain_project_url, **kwargs)
     resp.raise_for_status()
 
-    html = await resp.text()
+    html_text = await resp.text()
 
-    return html
+    return html_text
 
 
 async def parse_climb_or_area(url, session, **kwargs):
-    html = await get_request(url, session)
+    """Determines if a link is to a climb or an area"""
+    html_text = await get_request(url, session, **kwargs)
 
     mp_sidebar = SoupStrainer(class_='mp-sidebar')
-    page_links = BeautifulSoup(html, parse_only=mp_sidebar, features='lxml')
+    page_links = BeautifulSoup(html_text, parse_only=mp_sidebar, features='lxml')
 
-    if 'lef-nav-row' in html:
+    if 'lef-nav-row' in html_text:
         area_links = await area_finder(page_links)
 
         return 'area', area_links
@@ -54,9 +57,9 @@ async def parse_climb_or_area(url, session, **kwargs):
         return 'climb', climb_links
 
 
-async def main_loop(url, session, **kwargs):
+async def main_loop(mountain_project_url, session, **kwargs):
     climb_links = []
-    area_links = [url]
+    area_links = [mountain_project_url]
     while area_links:
         found_link = area_links.pop(0)
         x, y = await parse_climb_or_area(found_link, session, **kwargs)
@@ -66,19 +69,23 @@ async def main_loop(url, session, **kwargs):
 
             else:
                 climb_links.append(link)
-    print(len(climb_links))
+    print(len(climb_links))   # todo: remove this later
     return climb_links
 
 
-async def main(url_list):
+async def main(mountain_project_url_list):
+    """The main function to get called by scraper.py"""
     async with ClientSession() as session:
         tasks = []
-        for link in url_list:
+        for link in mountain_project_url_list:
             tasks.append(main_loop(link, session))
 
         await asyncio.gather(*tasks)
+        return tasks
+
 
 if __name__ == '__main__':
+    """This exists for testing purposes"""
     start_time = time.time()
     asyncio.run(main(['https://www.mountainproject.com/area/105929413/pawtuckaway']))
     print(f'{time.time()-start_time}')

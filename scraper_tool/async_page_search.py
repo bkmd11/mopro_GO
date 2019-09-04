@@ -1,5 +1,6 @@
 import asyncio
 import re
+import time
 
 from scraper_tool import page_search
 from aiohttp import ClientSession
@@ -36,8 +37,7 @@ async def write_awesome_climbs(climb_url, **kwargs):
     climbs, html = await parse(climb_url, **kwargs)
     for climb in climbs:
         climb_info = page_search.list_maker(climb, html)
-
-    print(climb_info)
+        print(climb_info)
 
 
 async def crawler(climb_url_list, **kwargs):
@@ -56,8 +56,10 @@ async def main(climb_url_list):
 
 
 if __name__ == '__main__':
+    start_time = time.time()
     asyncio.run(crawler([
         'https://www.mountainproject.com/route/106949198/short-stuff',
         'https://www.mountainproject.com/route/105941458/obscene-phone-call',
         'https://www.mountainproject.com/route/106540643/no-answer'
     ]))
+    print(f'{time.time()-start_time}')

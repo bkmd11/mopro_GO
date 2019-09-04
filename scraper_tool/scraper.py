@@ -6,9 +6,10 @@ This will be my masterpiece.
 """
 
 import json
+import time
 
 from scraper_tool import web_crawler
-from scraper_tool import async_page_search
+from scraper_tool import page_search
 
 # Todo: make this run with asyncio too
 
@@ -18,7 +19,7 @@ def main():
     climb_links = web_crawler.main_loop('https://www.mountainproject.com/area/105946021/blair-woods')
     
     # Goes through climb links to search for regex
-    off_widths = async_page_search.main(climb_links)
+    off_widths = page_search.awesome_climb(climb_links)
     print('Writing to file')
     
     with open('test.json', 'w') as climb_file:
@@ -26,4 +27,6 @@ def main():
 
 
 if __name__ == '__main__':
+    start_time = time.time()
     main()
+    print(f'{time.time()-start_time}')
