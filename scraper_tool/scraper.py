@@ -11,8 +11,6 @@ import time
 from scraper_tool import web_crawler
 from scraper_tool import page_search
 
-# Todo: make this run with asyncio too
-
 
 def main():
     # Loops through every area and sub area

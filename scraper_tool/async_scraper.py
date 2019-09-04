@@ -4,7 +4,6 @@ import asyncio
 
 from scraper_tool import async_web_crawler
 from scraper_tool import async_page_search
-# Todo: make this run with asyncio too
 
 
 async def main():

@@ -7,9 +7,6 @@ import time
 
 from bs4 import BeautifulSoup, SoupStrainer
 
-# Todo: A lot of this can change or be deleted once the async stuff is worked out
-#  I should write code to compare delta time for these two versions
-
 
 # A regex for off-widths
 def regex_search(page_text):
