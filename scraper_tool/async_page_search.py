@@ -5,7 +5,7 @@ import time
 from bs4 import BeautifulSoup, SoupStrainer
 from aiohttp import ClientSession
 
-REGEX = re.compile('off-width')   # todo: update this once I am up and running
+REGEX = re.compile(r'off width|off-width|chimney| ow | offwidth', re.I)
 
 
 async def grade_finder(request):
@@ -64,33 +64,31 @@ async def parse(climb_url, session, **kwargs):
     return found, html
 
 
-async def write_awesome_climbs(climb_url, **kwargs):
-    """Writes the list of climbs to a file for later use"""
-    # todo: figure out json with async stuff
-    climbs, html = await parse(climb_url, **kwargs)
-    for climb in climbs:
-        climb_info = await list_maker(climb, html)
-        print(climb_info)
+async def page_search_main(climb_url_list, session, **kwargs):
+    """This is the main function to be run with async_scraper"""
+    awesome_climb_list = []
+    for climb in climb_url_list:
+        climb_links, html = await parse(climb, session, **kwargs)
+        for link in climb_links:
+            awesome_climb_list.append(await list_maker(link, html))
+
+    return awesome_climb_list
 
 
-async def crawler(climb_url_list, **kwargs):
+async def main(climb_url_list, **kwargs):
     """ Starts the crawling portion of this shit show"""
     async with ClientSession() as session:
         tasks = []
         for climb_url in climb_url_list:
-            tasks.append(write_awesome_climbs(climb_url, session=session, **kwargs))
+            tasks.append(page_search_main(climb_url, session=session, **kwargs))
 
         await asyncio.gather(*tasks)
 
 
-async def main(climb_url_list):
-    """The main program to be called by scraper"""
-    asyncio.run(crawler(climb_url_list))
-
-
 if __name__ == '__main__':
+    """To be run for testing purposes"""
     start_time = time.time()
-    asyncio.run(crawler([
+    asyncio.run(main([
         'https://www.mountainproject.com/route/106949198/short-stuff',
         'https://www.mountainproject.com/route/105941458/obscene-phone-call',
         'https://www.mountainproject.com/route/106540643/no-answer'

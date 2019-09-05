@@ -57,7 +57,7 @@ async def parse_climb_or_area(url, session, **kwargs):
         return 'climb', climb_links
 
 
-async def main_loop(mountain_project_url, session, **kwargs):
+async def web_crawler_main(mountain_project_url, session, **kwargs):
     climb_links = []
     area_links = [mountain_project_url]
     while area_links:
@@ -69,7 +69,7 @@ async def main_loop(mountain_project_url, session, **kwargs):
 
             else:
                 climb_links.append(link)
-    print(len(climb_links))   # todo: remove this later
+
     return climb_links
 
 
@@ -78,10 +78,9 @@ async def main(mountain_project_url_list):
     async with ClientSession() as session:
         tasks = []
         for link in mountain_project_url_list:
-            tasks.append(main_loop(link, session))
+            tasks.append(web_crawler_main(link, session))
 
         await asyncio.gather(*tasks)
-        return tasks
 
 
 if __name__ == '__main__':
