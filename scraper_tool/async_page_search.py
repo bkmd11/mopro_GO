@@ -52,11 +52,16 @@ async def page_request(climb_url, session, **kwargs):
 
 
 async def parse(climb_url, session, **kwargs):
-    """Finds the regex in html"""
+    """Finds the regex in the description from the html"""
     found = set()
     html = await page_request(climb_url, session, **kwargs)
 
-    awesome_climb = REGEX.findall(html)
+    # Pulls out just the description
+    strainer = SoupStrainer(class_='col-xs-12')
+    climb_text = BeautifulSoup(html, parse_only=strainer, features='lxml')
+    description = climb_text.find(class_='fr-view')
+
+    awesome_climb = REGEX.findall(str(description))
 
     if len(awesome_climb) >= 1:
         found.add(climb_url)
@@ -78,9 +83,7 @@ async def page_search_main(climb_url_list, session, **kwargs):
 async def main(climb_url_list, **kwargs):
     """ Starts the crawling portion of this shit show"""
     async with ClientSession() as session:
-        tasks = []
-        for climb_url in climb_url_list:
-            tasks.append(page_search_main(climb_url, session=session, **kwargs))
+        tasks = [page_search_main(climb_url_list, session=session, **kwargs)]
 
         await asyncio.gather(*tasks)
 

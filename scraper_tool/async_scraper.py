@@ -20,8 +20,8 @@ async def scraper(link, session, **kwargs):
     print(len(off_widths))
     print('Writing to file')
 
-    with open('test.json', 'w') as climb_file:
-        json.dump(str(off_widths), climb_file)
+    with open('rumney.json', 'w') as climb_file:
+        json.dump(off_widths, climb_file)
 
 
 async def main(mountain_project_link):
@@ -36,5 +36,5 @@ async def main(mountain_project_link):
 
 if __name__ == '__main__':
     start_time = time.time()
-    asyncio.run(main(['https://www.mountainproject.com/area/105946021/blair-woods']))
+    asyncio.run(main(['https://www.mountainproject.com/area/105867829/rumney']))
     print(f'{time.time() - start_time}')
