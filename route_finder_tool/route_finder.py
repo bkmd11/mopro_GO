@@ -40,10 +40,9 @@ def escape_character(climbing_grade):
 
 # Takes a list of climbs and searches for a given criteria term
 def find_by_criteria(list_of_climbs):
-    global criteria
     search_term = regex(criteria)
 
-    filtered_list = list(filter(search_term.search, list_of_climbs))
+    filtered_list = [i for i in list_of_climbs if search_term.search(str(i))]
 
     return filtered_list
 
@@ -56,7 +55,7 @@ def area_slimmer_downer(area_option, list_of_climbs):
 
 
 if __name__ == '__main__':
-    with open('off_width.json', 'r') as file:
+    with open('rumney.json', 'r') as file:
         climbing_list = json.load(file)
 
     choice = input('"grade" or "area":\n')
@@ -82,10 +81,10 @@ if __name__ == '__main__':
 
     criteria = input('Make a selection from the list:\n')
 
-    x = list(filter(find_by_criteria, climbing_list))
+    list_filtered_by_criteria = find_by_criteria(climbing_list)
 
-    for i in x:
-        print(i[0])
+    for climb in list_filtered_by_criteria:
+        print(climb[0])
 
 """ I've made this work a bit better. In option finder.py I eliminated a couple things I didnt like.
 Error prone still, but I can make it work for me. Might break if I look for more than grade...
