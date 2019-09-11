@@ -39,9 +39,7 @@ def escape_character(climbing_grade):
 
 
 # Takes a list of climbs and searches for a given criteria term
-def find_by_criteria(list_of_climbs):
-    search_term = regex(criteria)
-
+def find_by_criteria(list_of_climbs, search_term):
     filtered_list = [i for i in list_of_climbs if search_term.search(str(i))]
 
     return filtered_list
@@ -75,17 +73,14 @@ if __name__ == '__main__':
             area = input('Make a selection from the list:\n')
 
             climbing_list = area_slimmer_downer(area, climbing_list)
-
+    # todo: currently if no selection is made it defaults to grade
+    #  not sure if its worth fixing this logic if I am making a GUI
     grades = option_finder.grade_options(climbing_list)
     pprint.pprint(grades)
 
     criteria = input('Make a selection from the list:\n')
-
-    list_filtered_by_criteria = find_by_criteria(climbing_list)
+    search_term_regex = regex(criteria)
+    list_filtered_by_criteria = find_by_criteria(climbing_list, search_term_regex)
 
     for climb in list_filtered_by_criteria:
         print(climb[0])
-
-""" I've made this work a bit better. In option finder.py I eliminated a couple things I didnt like.
-Error prone still, but I can make it work for me. Might break if I look for more than grade...
-"""
