@@ -1,6 +1,7 @@
 import json
 import time
 import asyncio
+import re
 
 from aiohttp import ClientSession
 
@@ -20,7 +21,7 @@ async def scraper(link, session, **kwargs):
     print(len(off_widths))
     print('Writing to file')
 
-    with open('rumney.json', 'w') as climb_file:
+    with open('test.json', 'w') as climb_file:
         json.dump(off_widths, climb_file)
 
 
@@ -34,7 +35,27 @@ async def main(mountain_project_link):
         await asyncio.gather(*tasks)
 
 
+def verify_link_input():
+    """Checks to make sure the link is a valid mountain project link"""
+    link = input('Copy and paste the full mountain project link:\n')
+    regex = re.compile('https://www.mountainproject.com/area/.*')
+    try:
+        verified_link = regex.search(link)
+        verified_link.group()
+        return link
+
+    except AttributeError:
+        return None
+
+
 if __name__ == '__main__':
     start_time = time.time()
-    asyncio.run(main(['https://www.mountainproject.com/area/105867829/rumney']))
+    while True:
+        mo_pro_link = verify_link_input()
+        if mo_pro_link is not None:
+            break
+        else:
+            print('Invalid area, please enter a valid area link.\n')
+
+    asyncio.run(main([mo_pro_link]))
     print(f'{time.time() - start_time}')
