@@ -21,7 +21,7 @@ def main():
     print('Writing to file')
     
     with open('test.json', 'w') as climb_file:
-        json.dump(off_widths,climb_file)
+        json.dump(off_widths, climb_file)
 
 
 if __name__ == '__main__':

@@ -54,6 +54,7 @@ async def page_request(climb_url, session, **kwargs):
 async def parse(climb_url, session, **kwargs):
     """Finds the regex in the description from the html"""
     found = set()
+    print(f'searching {climb_url}')
     html = await page_request(climb_url, session, **kwargs)
 
     # Pulls out just the description
@@ -65,7 +66,7 @@ async def parse(climb_url, session, **kwargs):
 
     if len(awesome_climb) >= 1:
         found.add(climb_url)
-
+        print('awesomeness found!')
     return found, html
 
 

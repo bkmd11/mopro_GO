@@ -41,6 +41,7 @@ async def get_request(mountain_project_url, session, **kwargs):
 
 async def parse_climb_or_area(url, session, **kwargs):
     """Determines if a link is to a climb or an area"""
+    print(f'parsing {url}')
     html_text = await get_request(url, session, **kwargs)
 
     mp_sidebar = SoupStrainer(class_='mp-sidebar')

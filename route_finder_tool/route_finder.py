@@ -10,8 +10,8 @@ import json
 import re
 import pprint
 
+#from route_finder_tool import option_finder
 from route_finder_tool import option_finder
-
 # TODO: Make a GUI with sexy click buttons
 
 
@@ -53,7 +53,7 @@ def area_slimmer_downer(area_option, list_of_climbs):
 
 
 if __name__ == '__main__':
-    with open('rumney.json', 'r') as file:
+    with open('test.json', 'r') as file:
         climbing_list = json.load(file)
 
     choice = input('"grade" or "area":\n')
