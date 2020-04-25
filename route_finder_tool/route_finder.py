@@ -10,7 +10,6 @@ import json
 import re
 import pprint
 
-#from route_finder_tool import option_finder
 from route_finder_tool import option_finder
 # TODO: Make a GUI with sexy click buttons
 
