@@ -8,6 +8,17 @@ from aiohttp import ClientSession
 REGEX = re.compile(r'off width|off-width|chimney| ow | offwidth', re.I)
 
 
+async def climb_name(request):
+    """Finds the name of the climb"""
+    strainer = SoupStrainer('h1')
+    name = BeautifulSoup(request, parse_only=strainer, features='lxml')
+
+    route_name = name.find_all(text=True)
+    cleaned_route_name = route_name[1].strip()
+
+    return cleaned_route_name
+
+
 async def grade_finder(request):
     """Finds the grade on the page"""
     strainer = SoupStrainer(class_='inline-block mr-2')
@@ -33,6 +44,8 @@ async def navigation_tree(request):
 async def list_maker(climb_link, request):
     """Makes a list to add to the big list"""
     list_ = [climb_link]
+    route_name = await climb_name(request)
+    list_.append(route_name)
     nav_tree = await navigation_tree(request)
     list_ += nav_tree
     grade = await grade_finder(request)
