@@ -7,6 +7,7 @@ from aiohttp import ClientSession
 
 from scraper_tool import async_web_crawler
 from scraper_tool import async_page_search
+from scraper_tool import load_to_db
 
 
 async def scraper(link, session, **kwargs):
@@ -18,8 +19,7 @@ async def scraper(link, session, **kwargs):
     # Goes through climb links to search for regex
     off_widths = await async_page_search.page_search_main(climb_links, session, style_regex='ow', **kwargs)
 
-    with open('test.json', 'w') as climb_file:
-        json.dump(off_widths, climb_file)
+
 
 
 async def main(mountain_project_link):

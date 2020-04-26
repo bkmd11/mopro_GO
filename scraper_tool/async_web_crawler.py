@@ -5,6 +5,7 @@ import time
 from bs4 import BeautifulSoup, SoupStrainer
 from aiohttp import ClientSession
 
+from colorama import init, Fore
 
 URL_TAG = re.compile(r'href="(.*?)"')
 
@@ -41,7 +42,8 @@ async def get_request(mountain_project_url, session, **kwargs):
 
 async def parse_climb_or_area(url, session, **kwargs):
     """Determines if a link is to a climb or an area"""
-    print(f'parsing {url}')
+
+    print(f'{Fore.GREEN}parsing {url}')
     html_text = await get_request(url, session, **kwargs)
 
     mp_sidebar = SoupStrainer(class_='mp-sidebar')

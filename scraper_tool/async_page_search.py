@@ -5,6 +5,7 @@ import time
 from bs4 import BeautifulSoup, SoupStrainer
 from aiohttp import ClientSession
 
+from colorama import Fore
 OFFWIDTH_REGEX = re.compile(r'off width|off-width|chimney| ow | offwidth', re.I)
 FINGER_REGEX = re.compile(r'finger|finger-crack|finger crack', re.I)
 FIST_REGEX = re.compile(r'fist', re.I)
@@ -71,7 +72,7 @@ async def page_request(climb_url, session, **kwargs):
 async def parse(climb_url, session, style_regex, **kwargs):
     """Finds the regex in the description from the html"""
     found = set()
-    print(f'searching {climb_url}')
+    print(f'{Fore.CYAN}searching {climb_url}')
     html = await page_request(climb_url, session, **kwargs)
 
     # Pulls out just the description
