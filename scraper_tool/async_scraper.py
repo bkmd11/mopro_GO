@@ -16,7 +16,7 @@ async def scraper(link, session, **kwargs):
     climb_links = await async_web_crawler.web_crawler_main(link, session, **kwargs)
 
     # Goes through climb links to search for regex
-    off_widths = await async_page_search.page_search_main(climb_links, session, **kwargs)
+    off_widths = await async_page_search.page_search_main(climb_links, session, style_regex='ow', **kwargs)
 
     with open('test.json', 'w') as climb_file:
         json.dump(off_widths, climb_file)
