@@ -38,36 +38,65 @@ def execute_query(connection, query, data):
     return id
 
 
-def main_query(connection, scrapped_data):
-    """Runs all the queries to populate tables. If the url is already in climbs table, it bypasses to reduce
-        redundancies and just fills in the climb_style information"""
+def insert_climb(climb_data, connection):
+    """The query to load into climb table
+        CLIMB_DATA MUST BE TUPLE"""
     climb_id = None
-    main_area_id = None
-
     try:
-        climbs = (scrapped_data[1], scrapped_data[0], scrapped_data[4])
         insert_climb_query = 'INSERT INTO climbs (climb_name, url, grade) VALUES (%s, %s, %s) RETURNING id;'
-        climb_id = execute_query(connection, insert_climb_query, climbs)
+        climb_id = execute_query(connection, insert_climb_query, climb_data)
     except psycopg2.Error as e:
         if e.pgcode == '23505':
             climb_id_query = 'SELECT id FROM climbs WHERE url = %s'
-            climb_id = execute_query(connection, climb_id_query, (scrapped_data[0],))
+            climb_id = execute_query(connection, climb_id_query, (climb_data[0],))
+
+    return climb_id
+
+
+def insert_main_area(area_data, connection):
+    """ The query to load into main_area table
+        AREA_DATA MUST BE TUPLE"""
+    main_area_id = None
     try:
-        main_area = (scrapped_data[2],)
         insert_main_area = 'INSERT INTO main_area (area) VALUES (%s) RETURNING id;'
-        main_area_id = execute_query(connection, insert_main_area, main_area)
+        main_area_id = execute_query(connection, insert_main_area, area_data)
     except psycopg2.Error as e:
         if e.pgcode == '23505':
             main_area_id_query = 'SELECT id FROM main_area WHERE area = %s;'
-            main_area_id = execute_query(connection, main_area_id_query, (scrapped_data[2], ))
+            main_area_id = execute_query(connection, main_area_id_query, area_data)
 
-    sub_area = (scrapped_data[3], climb_id, main_area_id)
+    return main_area_id
+
+
+def sub_area_query(sub_area_data, climb_id, main_area_id, connection):
+    """ The query to insert into sub_area table
+    SUB_AREA_DATA MUST BE TUPLE"""
+
+    sub_area = (sub_area_data, climb_id, main_area_id)
     insert_sub_area = 'INSERT INTO sub_area (area, climb_id, area_id) VALUES (%s, %s, %s) RETURNING id;'
     sub_area_id = execute_query(connection, insert_sub_area, sub_area)
 
-    style = (scrapped_data[-1], climb_id)
+    return sub_area_id
+
+
+def style_query(style_data, connection):
+    """The query to insert into climb_style table
+    STYLE DATA MUST BE TUPLE"""
+
     insert_style = 'INSERT INTO climb_style (climb_style, climb_id) VALUES (%s, %s) RETURNING id;'
-    style_id = execute_query(connection, insert_style, style)
+    style_id = execute_query(connection, insert_style, style_data)
+
+    return style_id
+
+
+def main_query(connection, scrapped_data):
+    """Runs all the queries to populate tables. If the url is already in climbs table, it bypasses to reduce
+        redundancies and just fills in the climb_style information"""
+    climb_id = insert_climb((scrapped_data[1], scrapped_data[0], scrapped_data[4]), connection)
+    main_area_id = insert_main_area((scrapped_data[2],), connection)
+
+    sub_area_id = sub_area_query((scrapped_data[3], climb_id, main_area_id), climb_id, main_area_id, connection)
+    style = style_query((scrapped_data[-1], climb_id), connection)
 
     print(f'{Fore.BLUE}"{scrapped_data[1]}" loaded into database')
 
