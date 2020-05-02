@@ -59,6 +59,15 @@ def window_layout(connection, main_area, sub_area):
     return psg.Window('Awesome Climb Finder', layout)
 
 
+def help_window(text):
+    """A somewhat useful help window"""
+    layout = [[psg.Text(text)],
+              [psg.Ok()]
+             ]
+
+    return psg.Window('Oops', layout)
+
+
 def main_window():
     reset_search = {'AREA': ''}    # this value makes it so if main area gets changed everything can reset
     connection = scq.create_connection('Brian Kendall', 'spam')
@@ -86,7 +95,12 @@ def main_window():
                 climb_name = climb_info[0].strip()
                 load_climb(connection, climb_name)
             except IndexError as e:
-                print(e)
+                help_me = help_window('Try selecting the climb before launching')
+                event, value = help_me.read()
+                while True:
+                    if event in (None, 'Ok'):
+                        help_me.close()
+                        break
 
 
 if __name__ == '__main__':
