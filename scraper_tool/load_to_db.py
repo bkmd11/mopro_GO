@@ -106,7 +106,7 @@ if __name__ == '__main__':
     with open('test.json', 'r') as file:
         data = json.load(file)
 
-    with open('db_credentials.json', 'r') as file:
+    with open(r'C:\Users\Brian Kendall\Desktop\off_width_scraper\db_credentials.json', 'r') as file:
         credentials = json.load(file)
 
     connection = create_connection(credentials['username'], credentials['password'])

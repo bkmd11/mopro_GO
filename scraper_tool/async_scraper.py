@@ -19,7 +19,7 @@ async def scraper(link, session, **kwargs):
     # Goes through climb links to search for regex
     off_widths = await async_page_search.page_search_main(climb_links, session, style_regex='ow', **kwargs)
 
-    with open('db_credentials.json', 'r') as file:
+    with open(r'C:\Users\Brian Kendall\Desktop\off_width_scraper\db_credentials.json', 'r') as file:
         credentials = json.load(file)
 
     connection = load_to_db.create_connection(credentials['username'], credentials['password'])
