@@ -25,17 +25,17 @@ def create_connection(username, pw):
 
 def execute_query(connection, query, data):
     """Executes the query"""
-    id = None
+    query_id = None
     connection.autocommit = True
     cursor = connection.cursor()
     try:
         cursor.execute(query, data)
-        id = cursor.fetchone()[0]
+        query_id = cursor.fetchone()[0]
 
     except OperationalError as e:
         print(f'Error {e} during query')
 
-    return id
+    return query_id
 
 
 def insert_climb(climb_data, connection):
