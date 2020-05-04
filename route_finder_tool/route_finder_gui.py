@@ -52,11 +52,10 @@ def window_layout(connection, main_area, sub_area):
     """ The window layout"""
     layout = [[main_area_menu(connection, default_value=main_area)],
               [sub_area_menu(connection, main_area, default_value=sub_area[0])],
-              [climb_menu(connection, sub_area[0])],
-              [search_button(), launch_button()]
+              [climb_menu(connection, sub_area[0])]
               ]
 
-    return psg.Window('Awesome Climb Finder', layout, element_justification='center', size=(500, 500))
+    return psg.Window('Awesome Climb Finder', layout, element_justification='center')
 
 
 def help_window(text):
@@ -76,11 +75,11 @@ def main_window():
 
     while True:
         event, value = window.read()
-        print(event)
+        # print(event)
         if event in (None, 'Escape:27'):
             break
         elif event in ('AREA', 'SUB_AREA'):
-            print(value)
+            # print(value)
             if value['AREA'] == reset_search['AREA']:
                 window.close()
                 window = window_layout(connection, value['AREA'], (value['SUB_AREA'],))
@@ -97,7 +96,7 @@ def main_window():
                 load_climb(connection, climb_name)
             except IndexError as e:
                 help_me = help_window('Try selecting the climb before launching')
-                print(e)
+                # print(e)
                 event, value = help_me.read()
                 while True:
                     if event in (None, 'Ok'):
