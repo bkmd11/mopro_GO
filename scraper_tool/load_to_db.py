@@ -47,7 +47,7 @@ def insert_climb(climb_data, connection):
         climb_id = execute_query(connection, insert_climb_query, climb_data)
     except psycopg2.Error as e:
         if e.pgcode == '23505':
-            climb_id_query = 'SELECT id FROM climbs WHERE url = %s'
+            climb_id_query = 'SELECT id FROM climbs WHERE url = %s;'
             climb_id = execute_query(connection, climb_id_query, (climb_data[0],))
 
     return climb_id
