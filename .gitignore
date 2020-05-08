@@ -6,7 +6,3 @@ test.json
 *.json
 off_width/
 *.txt
-obsolete
-*.log
-data/
-tmp/
