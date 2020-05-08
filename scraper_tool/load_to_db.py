@@ -68,13 +68,13 @@ def insert_main_area(area_data, connection):
     return main_area_id
 
 
-def sub_area_query(sub_area_data, climb_id, main_area_id, connection):
+def sub_area_query(sub_area_data, connection):
     """ The query to insert into sub_area table
     SUB_AREA_DATA MUST BE TUPLE"""
 
-    sub_area = (sub_area_data, climb_id, main_area_id)
+
     insert_sub_area = 'INSERT INTO sub_area (area, climb_id, area_id) VALUES (%s, %s, %s) RETURNING id;'
-    sub_area_id = execute_query(connection, insert_sub_area, sub_area)
+    sub_area_id = execute_query(connection, insert_sub_area, sub_area_data)
 
     return sub_area_id
 
@@ -95,7 +95,7 @@ def main_query(connection, scrapped_data):
     climb_id = insert_climb((scrapped_data[1], scrapped_data[0], scrapped_data[4]), connection)
     main_area_id = insert_main_area((scrapped_data[2],), connection)
 
-    sub_area_id = sub_area_query((scrapped_data[3], climb_id, main_area_id), climb_id, main_area_id, connection)
+    sub_area_id = sub_area_query((scrapped_data[3], climb_id, main_area_id), connection)
     style = style_query((scrapped_data[-1], climb_id), connection)
 
     print(f'{Fore.BLUE}"{scrapped_data[1]}" loaded into database')
