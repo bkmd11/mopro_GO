@@ -12,38 +12,53 @@ from route_finder_tool import select_climb_queries
 from scraper_tool import load_to_db
 
 
-unittest.TestLoader.sortTestMethodsUsing = None   # this is so it runs in the order I want
+#unittest.TestLoader.sortTestMethodsUsing = None   # this is so it runs in the order I want
 
-# Setting globals to build a temp database
-BUILD_QUERY = '''CREATE TABLE IF NOT EXISTS climbs (
-                                id SERIAL PRIMARY KEY,
-                                climb_name TEXT NOT NULL,
-                                url TEXT NOT NULL CONSTRAINT one_url UNIQUE,
-                                grade TEXT NOT NULL)
-                                ;
-                            CREATE TABLE IF NOT EXISTS main_area (
-                                id SERIAL PRIMARY KEY,
-                                area TEXT NOT NULL CONSTRAINT one_area UNIQUE)
-                                ;
-                            CREATE TABLE IF NOT EXISTS sub_area (
-                                id SERIAL PRIMARY KEY,
-                                area TEXT NOT NULL,
-                                climb_id INTEGER REFERENCES climbs(id),
-                                area_id INTEGER REFERENCES main_area(id))
-                                ;
-                            CREATE TABLE IF NOT EXISTS climb_style (
-                                id SERIAL PRIMARY KEY,
-                                climb_style TEXT NOT NULL,
-                                climb_id INTEGER REFERENCES climbs(id))
-                                ;'''
-postgres = testing.postgresql.Postgresql()
+with open(r'C:\Users\Brian Kendall\Desktop\off_width_scraper\tests\test.json', 'r') as file:
+    test_data = json.load(file)
+
+name = 'test_db'
+port = 5678
+path = r'C:\Users\Brian Kendall\Desktop\off_width_scraper\tests'
+postgres = testing.postgresql.Postgresql(port=port, name=name, base_dir=path)
 connection = psycopg2.connect(**postgres.dsn())
+
+
 connection.autocommit = True
 cursor = connection.cursor()
-cursor.execute(BUILD_QUERY)
 
-with open('test.json', 'r') as file:
-    test_data = json.load(file)
+cursor.execute('''CREATE TABLE IF NOT EXISTS climbs (
+                            id SERIAL PRIMARY KEY,
+                            climb_name TEXT NOT NULL,
+                            url TEXT NOT NULL CONSTRAINT one_url UNIQUE,
+                            grade TEXT NOT NULL)
+                            ;
+                        CREATE TABLE IF NOT EXISTS main_area (
+                            id SERIAL PRIMARY KEY,
+                            area TEXT NOT NULL CONSTRAINT one_area UNIQUE)
+                            ;
+                        CREATE TABLE IF NOT EXISTS sub_area (
+                            id SERIAL PRIMARY KEY,
+                            area TEXT NOT NULL,
+                            climb_id INTEGER REFERENCES climbs(id),
+                            area_id INTEGER REFERENCES main_area(id))
+                            ;
+                        CREATE TABLE IF NOT EXISTS climb_style (
+                            id SERIAL PRIMARY KEY,
+                            climb_style TEXT NOT NULL,
+                            climb_id INTEGER REFERENCES climbs(id))
+                            ;''')
+
+
+def tearDownModule():
+    connection.autocommit = True
+    cursor = connection.cursor()
+
+    cursor.execute('''DROP TABLE climb_style;
+                        DROP TABLE sub_area;
+                        DROP TABLE main_area;
+                        DROP TABLE climbs;''')
+    
 
 
 class TestLoadToDB(unittest.TestCase):
@@ -109,6 +124,7 @@ class TestSelectClimbQueries(unittest.TestCase):
         result = select_climb_queries.get_climb_url_query(connection, 'Fritz\'s Demise')
 
         self.assertEqual(result, [('https://www.mountainproject.com/route/106306113/fritzs-demise', )])
+
 
 
 if __name__ == '__main__':
