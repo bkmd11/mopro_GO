@@ -12,7 +12,7 @@ from route_finder_tool import select_climb_queries
 from scraper_tool import load_to_db
 
 
-with open(r'C:\Users\Brian Kendall\Desktop\off_width_scraper\tests\test.json', 'r') as file:
+with open(r'C:\Users\Brian Kendall\Desktop\off_width_scraper\tests\test_database_data.json', 'r') as file:
     test_data = json.load(file)
 
 #name = 'test_db'
@@ -70,7 +70,7 @@ class TestLoadToDB(unittest.TestCase):
        # with self.assertRaises(TypeError):
         result = load_to_db.insert_main_area((test_data[0][2],), connection)
 
-        #self.assertEqual(result, 1)
+        self.assertEqual(result, 1)
 
     def test_sub_area_query(self):
         result = load_to_db.sub_area_query((test_data[0][3], 1, 1), connection)
