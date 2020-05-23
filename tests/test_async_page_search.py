@@ -2,7 +2,7 @@ import asynctest
 
 from scraper_tool import async_page_search
 
-with open('test_request_text.txt', 'r') as file:
+with open(r'C:\Users\Brian Kendall\Desktop\off_width_scraper\tests\test_request_text.txt', 'r') as file:
     request_text = file.read()
 
 
