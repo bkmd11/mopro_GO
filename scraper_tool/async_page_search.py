@@ -30,7 +30,7 @@ async def grade_finder(html_text):
 
     text_for_grade = grade.find_all(text=True)
 
-    return text_for_grade[1]    # The grade will have a space after it
+    return text_for_grade[1].strip()    # The grade will have a space after it
 
 
 async def navigation_tree(html_text):
