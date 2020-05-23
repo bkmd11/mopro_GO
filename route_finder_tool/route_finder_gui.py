@@ -1,7 +1,14 @@
 import PySimpleGUI as psg
 import webbrowser
+import json
 
 from route_finder_tool import select_climb_queries as scq
+
+
+def title_bar(text):
+    """Title bar for the various dropdown menus"""
+
+    return psg.Text(text, font=(None, 20), text_color='black', )
 
 
 def main_area_menu(connection, **kwargs):
@@ -28,7 +35,7 @@ def climb_menu(connection, sub_area_input):
 
     list_of_climbs = [f'{i[0]} -> {i[1]}' for i in climbs]
 
-    return psg.Listbox(list_of_climbs, key='CLIMB', no_scrollbar=True, enable_events=True, font=40, size=(42, len(list_of_climbs),))
+    return psg.Listbox(list_of_climbs, key='CLIMB', no_scrollbar=True, enable_events=True, font=(None, 15), size=(42, len(list_of_climbs),))
 
 
 def load_climb(connection, climb_name):
@@ -50,8 +57,11 @@ def launch_button():
 
 def window_layout(connection, main_area, sub_area):
     """ The window layout"""
-    layout = [[main_area_menu(connection, default_value=main_area)],
+    layout = [[title_bar('Main Area')],
+              [main_area_menu(connection, default_value=main_area)],
+              [title_bar('Sub Area')],
               [sub_area_menu(connection, main_area, default_value=sub_area[0])],
+              [title_bar('Climbs')],
               [climb_menu(connection, sub_area[0])]
               ]
 
@@ -67,9 +77,9 @@ def help_window(text):
     return psg.Window('Oops', layout, element_justification='center', background_color='red')
 
 
-def main_window():
+def main_window(username, password):
     reset_search = {'AREA': ''}    # this value makes it so if main area gets changed everything can reset
-    connection = scq.create_connection('Brian Kendall', 'spam')
+    connection = scq.create_connection(username, password)
 
     window = window_layout(connection, '', ('',))
 
@@ -105,4 +115,6 @@ def main_window():
 
 
 if __name__ == '__main__':
-    main_window()
+    with open(r'C:\Users\Brian Kendall\Desktop\off_width_scraper\db_credentials.json', 'r') as file:
+        credentials = json.load(file)
+    main_window(credentials['username'], credentials['password'])
