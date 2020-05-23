@@ -12,10 +12,10 @@ FIST_REGEX = re.compile(r'fist', re.I)
 # TODO: make scrapper look for all these types and save them to my database
 
 
-async def climb_name(request):
+async def climb_name(html_text):
     """Finds the name of the climb"""
     strainer = SoupStrainer('h1')
-    name = BeautifulSoup(request, parse_only=strainer, features='lxml')
+    name = BeautifulSoup(html_text, parse_only=strainer, features='lxml')
 
     route_name = name.find_all(text=True)
     cleaned_route_name = route_name[1].strip()
@@ -23,21 +23,21 @@ async def climb_name(request):
     return cleaned_route_name
 
 
-async def grade_finder(request):
+async def grade_finder(html_text):
     """Finds the grade on the page"""
     strainer = SoupStrainer(class_='inline-block mr-2')
-    grade = BeautifulSoup(request, parse_only=strainer, features='lxml')
+    grade = BeautifulSoup(html_text, parse_only=strainer, features='lxml')
 
     text_for_grade = grade.find_all(text=True)
 
     return text_for_grade[1]    # The grade will have a space after it
 
 
-async def navigation_tree(request):
+async def navigation_tree(html_text):
     """Finds the area navigation tree on the page"""
     nav_tree = []
     strainer = SoupStrainer(class_='mb-half small text-warm')
-    navigation_tree = BeautifulSoup(request, parse_only=strainer, features='lxml')
+    navigation_tree = BeautifulSoup(html_text, parse_only=strainer, features='lxml')
 
     for link in navigation_tree.find_all('a'):
         nav_tree.append(link.get('href').rsplit('/', 1)[1])
@@ -45,14 +45,14 @@ async def navigation_tree(request):
     return nav_tree[2:4]
 
 
-async def list_maker(climb_link, request, style_regex):
+async def list_maker(climb_link, html_text, style_regex):
     """Makes a list to add to the big list"""
     list_ = [climb_link]
-    route_name = await climb_name(request)
+    route_name = await climb_name(html_text)
     list_.append(route_name)
-    nav_tree = await navigation_tree(request)
+    nav_tree = await navigation_tree(html_text)
     list_ += nav_tree
-    grade = await grade_finder(request)
+    grade = await grade_finder(html_text)
     list_.append(grade)
     list_.append(style_regex)
 
