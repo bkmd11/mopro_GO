@@ -10,7 +10,7 @@ from scraper_tool import crawler
 with open(r'C:\Users\Brian Kendall\Desktop\off_width_scraper\tests\test_database_data.json', 'r') as file:
     mountain_proj_list = json.load(file)
 
-
+# TODO: Apparently none of these actually work
 class TestAreaFinder(asynctest.TestCase):
     def test_area_finder_ignores_route(self):
         result = self.loop.run_until_complete(crawler.area_finder(mountain_proj_list))
@@ -22,6 +22,7 @@ class TestAreaFinder(asynctest.TestCase):
         result = self.loop.run_until_complete(crawler.area_finder(mountain_proj_list))
 
         for i in result:
+            print('spam')
             self.assertNotIn('com/map', i)
 
     def test_area_finder_finds_area(self):
@@ -43,6 +44,11 @@ class TestClimbFinder(asynctest.TestCase):
 
         for i in result:
             self.assertIn('com/route', i)
+
+    def test_climb_finder_adds_climb(self):
+        result = self.loop.run_until_complete(crawler.climb_finder(mountain_proj_list))
+
+        self.assertEqual(result, ['https://www.mountainproject.com/route/106306113/fritzs-demise'])
 
 
 class TestGetRequest(asynctest.TestCase):

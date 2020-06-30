@@ -101,14 +101,3 @@ def main_query(connection, scrapped_data):
     print(f'{Fore.BLUE}"{scrapped_data[1]}" loaded into database')
 
 
-if __name__ == '__main__':
-    """ Testing purposes"""
-    with open('test.json', 'r') as file:
-        data = json.load(file)
-
-    with open(r'C:\Users\Brian Kendall\Desktop\off_width_scraper\db_credentials.json', 'r') as file:
-        credentials = json.load(file)
-
-    connection = create_connection(credentials['username'], credentials['password'])
-    for i in data:
-        main_query(connection, i)

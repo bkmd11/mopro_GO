@@ -103,23 +103,3 @@ async def page_search_main(climb_url_list, session, style_regex, **kwargs):
 
     return awesome_climb_list
 
-
-async def main(climb_url_list, **kwargs):
-    """ Starts the crawling portion of this shit show"""
-    #style_regex = input('Enter choice "ow" or "finger" or "fist": ')
-    async with ClientSession() as session:
-        tasks = [page_search_main(climb_url_list, session=session, style_regex='ow', **kwargs)]
-
-        await asyncio.gather(*tasks)
-
-
-if __name__ == '__main__':
-    """To be run for testing purposes"""
-    start_time = time.time()
-    asyncio.run(main([
-        'https://www.mountainproject.com/route/106949198/short-stuff',
-        'https://www.mountainproject.com/route/105941458/obscene-phone-call',
-        'https://www.mountainproject.com/route/106540643/no-answer',
-        'https://www.mountainproject.com/route/105929544/the-horn'
-    ]))
-    print(f'{time.time()-start_time}')
