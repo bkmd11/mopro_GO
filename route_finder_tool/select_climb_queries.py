@@ -4,15 +4,15 @@ from psycopg2 import OperationalError
 import json
 
 
-def create_connection(username, pw):
+def create_connection(database, username, pw, host):
     """Creates the connection to database"""
     connection = None
     try:
         connection = psycopg2.connect(
-            database='mopro_climbs',
+            database=database,
             user=username,
             password=pw,
-            host='localhost'
+            host=host
         )
         print('Connected to mopro_climbs')
     except OperationalError as e:
@@ -98,14 +98,3 @@ def get_climb_url_query(connection, climb_name):
     result = execute_query(connection, query, (climb_name,))
 
     return result
-
-
-if __name__ == '__main__':
-    with open(r'C:\Users\Brian Kendall\Desktop\off_width_scraper\db_credentials.json', 'r') as file:
-        credentials = json.load(file)
-    connection = create_connection(credentials['username'], credentials['password'])
-    print(get_main_areas_query(connection))
-    print(get_climbs_by_grade_query(connection, '5.7 ', 'pawtuckaway'))
-    print(get_sub_areas_query(connection, 'pawtuckaway'))
-    print(get_climb_url_query(connection, 'Smokestack'))
-    print(get_climbs_by_sub_area(connection, 'new-wave'))

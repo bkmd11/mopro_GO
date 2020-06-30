@@ -77,9 +77,9 @@ def help_window(text):
     return psg.Window('Oops', layout, element_justification='center', background_color='red')
 
 
-def main_window(username, password):
+def main_window(database, username, password, host):
     reset_search = {'AREA': ''}    # this value makes it so if main area gets changed everything can reset
-    connection = scq.create_connection(username, password)
+    connection = scq.create_connection(database, username, password, host)
 
     window = window_layout(connection, '', ('',))
 
@@ -117,4 +117,4 @@ def main_window(username, password):
 if __name__ == '__main__':
     with open(r'C:\Users\Brian Kendall\Desktop\off_width_scraper\db_credentials.json', 'r') as file:
         credentials = json.load(file)
-    main_window(credentials['username'], credentials['password'])
+    main_window(credentials['database'], credentials['username'], credentials['password'], credentials['host'])

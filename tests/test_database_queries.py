@@ -15,9 +15,6 @@ from scraper_tool import load_to_db
 with open(r'C:\Users\Brian Kendall\Desktop\off_width_scraper\tests\test_database_data.json', 'r') as file:
     test_data = json.load(file)
 
-#name = 'test_db'
-#port = 5678
-#path = r'C:\Users\Brian Kendall\Desktop\off_width_scraper\tests'
 postgres = testing.postgresql.Postgresql()
 connection = psycopg2.connect(**postgres.dsn())
 
@@ -84,6 +81,7 @@ class TestLoadToDB(unittest.TestCase):
 
 
 class TestSelectClimbQueries(unittest.TestCase):
+
     def test_get_main_areas_query(self):
         result = select_climb_queries.get_main_areas_query(connection)
 
