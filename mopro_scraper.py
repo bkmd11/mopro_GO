@@ -5,8 +5,8 @@ import re
 
 from aiohttp import ClientSession
 
-from scraper_tool import async_web_crawler
-from scraper_tool import async_page_search
+from scraper_tool import crawler
+from scraper_tool import page_search
 from scraper_tool import load_to_db
 
 
@@ -14,12 +14,12 @@ async def scraper(link, session, **kwargs):
     """Scrapes mountain project links to find all sub areas
     and assert awesomeness of a climb"""
     # Loops through every area and sub area
-    climb_links = await async_web_crawler.web_crawler_main(link, session, **kwargs)
+    climb_links = await crawler.web_crawler_main(link, session, **kwargs)
 
     # Goes through climb links to search for regex
-    off_widths = await async_page_search.page_search_main(climb_links, session, style_regex='ow', **kwargs)
+    off_widths = await page_search.page_search_main(climb_links, session, style_regex='ow', **kwargs)
 
-    with open(r'C:\Users\Brian Kendall\Desktop\off_width_scraper\db_credentials.json', 'r') as file:
+    with open(r'/db_credentials.json', 'r') as file:
         credentials = json.load(file)
 
     connection = load_to_db.create_connection(credentials['username'], credentials['password'])

@@ -115,6 +115,6 @@ def main_window(database, username, password, host):
 
 
 if __name__ == '__main__':
-    with open(r'C:\Users\Brian Kendall\Desktop\off_width_scraper\db_credentials.json', 'r') as file:
+    with open(r'/db_credentials.json', 'r') as file:
         credentials = json.load(file)
     main_window(credentials['database'], credentials['username'], credentials['password'], credentials['host'])
