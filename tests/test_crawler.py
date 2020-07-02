@@ -8,6 +8,10 @@ from bs4 import BeautifulSoup, SoupStrainer
 from scraper_tool import crawler
 
 
+def setUpModule():
+    session = ClientSession()
+
+
 class TestAreaFinder(asynctest.TestCase):
     def setUp(self):
         self.html = requests.get('https://www.mountainproject.com/area/105929413/pawtuckaway')
@@ -97,6 +101,31 @@ class TestParseClimbOrArea(asynctest.TestCase):
 
         self.assertIn('climb', result)
         self.assertTrue(len(result[1]) == 0)
+
+    async def tearDown(self):
+        await self.session.close()
+
+
+class TestWebCrawlerMain(asynctest.TestCase):
+    async def setUp(self):
+        self.session = ClientSession()
+
+    async def test_main(self):
+        result = await crawler.web_crawler_main('https://www.mountainproject.com/area/106523382/the-split-boulder',
+                                                self.session)
+
+        self.assertEqual(result, ['https://www.mountainproject.com/route/106104812/anorexorcist',
+                                  'https://www.mountainproject.com/route/106041614/bones-to-bits',
+                                  'https://www.mountainproject.com/route/112138886/bulemia',
+                                  'https://www.mountainproject.com/route/106118276/confident-man',
+                                  'https://www.mountainproject.com/route/112272699/flakes-of-life',
+                                  'https://www.mountainproject.com/route/106118269/halcyon',
+                                  'https://www.mountainproject.com/route/109648266/jaded',
+                                  'https://www.mountainproject.com/route/106632408/the-morgue',
+                                  'https://www.mountainproject.com/route/106104859/my-little-pony',
+                                  'https://www.mountainproject.com/route/112036656/outback',
+                                  'https://www.mountainproject.com/route/106632399/rios-problem',
+                                  'https://www.mountainproject.com/route/106104828/stegasaurus'])
 
     async def tearDown(self):
         await self.session.close()

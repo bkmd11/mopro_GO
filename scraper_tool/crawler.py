@@ -1,9 +1,7 @@
 import asyncio
 import re
-import time
 
 from bs4 import BeautifulSoup, SoupStrainer
-from aiohttp import ClientSession
 
 from colorama import init, Fore
 
@@ -74,20 +72,3 @@ async def web_crawler_main(mountain_project_url, session, **kwargs):
                 climb_links.append(link)
 
     return climb_links
-
-
-async def main(mountain_project_url_list):
-    """The main function to get called by scraper.py"""
-    async with ClientSession() as session:
-        tasks = []
-        for link in mountain_project_url_list:
-            tasks.append(web_crawler_main(link, session))
-
-        await asyncio.gather(*tasks)
-
-
-if __name__ == '__main__':
-    """This exists for testing purposes"""
-    start_time = time.time()
-    asyncio.run(main(['https://www.mountainproject.com/area/107340274/cannon-cliff']))
-    print(f'{time.time()-start_time}')
