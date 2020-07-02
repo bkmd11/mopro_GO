@@ -1,54 +1,57 @@
 import unittest
 import asynctest
 
-import json
 from aiohttp import ClientSession
+import requests
+from bs4 import BeautifulSoup, SoupStrainer
 
 from scraper_tool import crawler
 
 
-with open(r'C:\Users\Brian Kendall\Desktop\off_width_scraper\tests\test_database_data.json', 'r') as file:
-    mountain_proj_list = json.load(file)
-
-# TODO: Apparently none of these actually work
 class TestAreaFinder(asynctest.TestCase):
+    def setUp(self):
+        self.html = requests.get('https://www.mountainproject.com/area/105929413/pawtuckaway')
+        self.html_text = self.html.text
+        self.mp_sidebar = SoupStrainer(class_='mp-sidebar')
+        self.bs4_parsed_area = BeautifulSoup(self.html_text, parse_only=self.mp_sidebar, features='lxml')
+
     def test_area_finder_ignores_route(self):
-        result = self.loop.run_until_complete(crawler.area_finder(mountain_proj_list))
+        result = self.loop.run_until_complete(crawler.area_finder(self.bs4_parsed_area))
 
         for i in result:
             self.assertNotIn('com/route', i)
 
     def test_area_finder_ignores_map(self):
-        result = self.loop.run_until_complete(crawler.area_finder(mountain_proj_list))
+        result = self.loop.run_until_complete(crawler.area_finder(self.bs4_parsed_area))
 
         for i in result:
-            print('spam')
             self.assertNotIn('com/map', i)
 
     def test_area_finder_finds_area(self):
-        result = self.loop.run_until_complete(crawler.area_finder(mountain_proj_list))
+        result = self.loop.run_until_complete(crawler.area_finder(self.bs4_parsed_area))
 
         for i in result:
             self.assertIn('com/area', i)
 
 
 class TestClimbFinder(asynctest.TestCase):
+    def setUp(self):
+        self.html = requests.get('https://www.mountainproject.com/area/106523382/the-split-boulder')
+        self.html_text = self.html.text
+        self.mp_sidebar = SoupStrainer(class_='mp-sidebar')
+        self.bs4_parsed_route = BeautifulSoup(self.html_text, parse_only=self.mp_sidebar, features='lxml')
+
     def test_climb_finder_ignores_map(self):
-        result = self.loop.run_until_complete(crawler.climb_finder(mountain_proj_list))
+        result = self.loop.run_until_complete(crawler.climb_finder(self.bs4_parsed_route))
 
         for i in result:
             self.assertNotIn('com/map', i)
 
     def test_climb_finder_finds_climb(self):
-        result = self.loop.run_until_complete(crawler.climb_finder(mountain_proj_list))
+        result = self.loop.run_until_complete(crawler.climb_finder(self.bs4_parsed_route))
 
         for i in result:
             self.assertIn('com/route', i)
-
-    def test_climb_finder_adds_climb(self):
-        result = self.loop.run_until_complete(crawler.climb_finder(mountain_proj_list))
-
-        self.assertEqual(result, ['https://www.mountainproject.com/route/106306113/fritzs-demise'])
 
 
 class TestGetRequest(asynctest.TestCase):
@@ -72,17 +75,32 @@ class TestParseClimbOrArea(asynctest.TestCase):
     async def test_parse_returns_area(self):
         result = await crawler.parse_climb_or_area('https://www.mountainproject.com/area/106688566/area-51',
                                                    self.session)
+
         self.assertIn('area', result)
 
+    async def test_parse_does_not_return_area(self):
+        result = await crawler.parse_climb_or_area('https://www.mountainproject.com/route/106306113/fritzs-demise',
+                                                   self.session)
+
+        self.assertNotIn('area', result)
+
     async def test_parse_returns_climb(self):
-        result = await crawler.parse_climb_or_area('https://www.mountainproject.com/map/107112720/bermuda-triangle-boulder',
+        result = await crawler.parse_climb_or_area('https://www.mountainproject.com/route/106306113/fritzs-demise',
                                                    self.session)
 
         self.assertIn('climb', result)
+        self.assertTrue(len(result[1]) > 0)
+
+    async def test_parse_ignores_map_link(self):
+        result = await crawler.parse_climb_or_area('https://www.mountainproject.com/map/106523382/the-split-boulder',
+                                                   self.session)
+
+        self.assertIn('climb', result)
+        self.assertTrue(len(result[1]) == 0)
 
     async def tearDown(self):
         await self.session.close()
 
 
 if __name__ == '__main__':
-    unittest.main(buffer=True)
+    unittest.main(buffer=False)
