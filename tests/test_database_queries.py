@@ -44,10 +44,16 @@ cursor.execute('''CREATE TABLE IF NOT EXISTS climb_style (
 
 
 class TestLoadToDB(unittest.TestCase):
+    # TODO: check against multiple styles
     def test_1_style_query(self):
         result = load_to_db.style_query((test_data[0][5], ), connection)
 
         self.assertIsInstance(result, int)
+
+    def test_1_style_query_wont_repeat(self):
+        result = load_to_db.style_query((test_data[0][5], ), connection)
+
+        self.assertEqual(result, 1)
 
     def test_insert_climb(self):
         result = load_to_db.insert_climb((test_data[0][1], test_data[0][0], test_data[0][4], 1), connection)
@@ -94,10 +100,6 @@ class TestSelectClimbQueries(unittest.TestCase):
 
         self.assertEqual(result, [(1,)])
 
-    def test_get_climb_by_grade(self):
-        result = select_climb_queries.get_climbs_by_grade_query(connection, 'V0 ', 'pawtuckaway')
-
-        self.assertEqual(result, [('Fritz\'s Demise', 1)])
 
     def test_get_climbs_by_sub_area(self):
         result = select_climb_queries.get_climbs_by_sub_area(connection, 'boulder-natural')

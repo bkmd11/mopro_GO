@@ -105,7 +105,7 @@ def main_window(database, username, password, host):
                 climb_name = climb_info[0].strip()
                 load_climb(connection, climb_name)
             except IndexError as e:
-                help_me = help_window('Try selecting the climb before launching')
+                help_me = help_window('Filter For Climbs First')
                 # print(e)
                 event, value = help_me.read()
                 while True:

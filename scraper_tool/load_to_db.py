@@ -85,7 +85,6 @@ def style_query(style_data, connection):
     try:
         insert_style = 'INSERT INTO climb_style (climb_style) VALUES (%s) RETURNING id;'
         style_id = execute_query(connection, insert_style, style_data)
-        print(style_id)
     except psycopg2.Error as e:
         if e.pgcode == '23505':
             style_id_query = 'SELECT id FROM climb_style WHERE climb_style = %s'

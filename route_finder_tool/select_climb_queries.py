@@ -41,6 +41,22 @@ def execute_query(connection, query, data=None):
     return results
 
 
+def get_styles_query(connection):
+    """Gets the style option available in database"""
+    query = 'SELECT climb_style FROM climb_style;'
+    result = execute_query(connection, query)
+
+    return result
+
+
+def get_style_id_query(connection, style):
+    """ Gets the id of a given style"""
+    query = 'SELECT id FROM climb_style WHERE climb_style = %s'
+    result = execute_query(connection, query, style)
+
+    return result
+
+
 def get_main_areas_query(connection):
     """Gets the main areas from the database"""
     query = 'SELECT area FROM main_area;'
@@ -67,17 +83,10 @@ def get_main_area_id_query(connection, main_area):
     return result
 
 
-def get_climbs_by_grade_query(connection, grade, main_area):
-    """Shows climbs of a given grade """
-
-    main_area_id = get_main_area_id_query(connection, (main_area,))
-
-    sub_area_query = 'SELECT climb_id FROM sub_area WHERE area_id = %s'
-    climb_ids = execute_query(connection, sub_area_query, (main_area_id[0][0],))
-
-    query = 'SELECT climb_name, id  FROM climbs WHERE grade = %s AND id IN %s;'
-
-    result = execute_query(connection, query, (grade, tuple(climb_ids)))
+def get_climbs_by_style(connection, sub_area, style_id):
+    """ Gets climbs of a certain style"""
+    query = 'SELECT climb_name, grade FROM climbs, WHERE sub_area.area = %s and sub_area.climb_id = climbs.id and climbs.style = %s'
+    result = execute_query(connection, query, (sub_area, style_id))
 
     return result
 
