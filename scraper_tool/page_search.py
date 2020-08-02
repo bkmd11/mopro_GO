@@ -84,8 +84,8 @@ async def parse(climb_url, session, style_regex, **kwargs):
         awesome_climb = OFFWIDTH_REGEX.findall(str(description))
  #   elif style_regex == 'finger':
   #      awesome_climb = FINGER_REGEX.findall(str(description))
-   # elif style_regex == 'fist':
-    #    awesome_climb = FIST_REGEX.findall(str(description))
+    elif style_regex == 'fist':
+        awesome_climb = FIST_REGEX.findall(str(description))
 
     if len(awesome_climb) >= 1:
         found.add(climb_url)

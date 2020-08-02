@@ -69,7 +69,7 @@ class TestParse(asynctest.TestCase):
     async def setUp(self):
         self.session = ClientSession()
 
-    async def test_parse_prints_awesomeness_correctly(self):
+    async def test_parse_prints_awesomeness_correctly_ow(self):
         output = StringIO()
         sys.stdout = output
         result = await page_search.parse('https://www.mountainproject.com/route/107235878/yellow-zonkers', self.session,
@@ -80,11 +80,30 @@ class TestParse(asynctest.TestCase):
                          f'\nawesomeness found!\n')
         self.assertEqual(len(result[0]), 1)
 
-    async def test_parse_ignores_lame_climbs(self):
+    async def test_parse_ignores_lame_climbs_ow(self):
         output = StringIO()
         sys.stdout = output
         result = await page_search.parse('https://www.mountainproject.com/route/117989364/beanstalk',
                                          self.session, 'ow')
+
+        self.assertEqual(len(result[0]), 0)
+
+    async def test_parse_prints_awesomeness_correctly_fist(self):
+        output = StringIO()
+        sys.stdout = output
+        result = await page_search.parse('https://www.mountainproject.com/route/107607462/the-raptor-roofs', self.session,
+                                         'fist')
+
+        self.assertEqual(output.getvalue(),
+                         f'{Fore.CYAN}searching https://www.mountainproject.com/route/107607462/the-raptor-roofs'
+                         f'\nawesomeness found!\n')
+        self.assertEqual(len(result[0]), 1)
+
+    async def test_parse_ignores_lame_climbs_fist(self):
+        output = StringIO()
+        sys.stdout = output
+        result = await page_search.parse('https://www.mountainproject.com/route/117989364/beanstalk',
+                                         self.session, 'fist')
 
         self.assertEqual(len(result[0]), 0)
 

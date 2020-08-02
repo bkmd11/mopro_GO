@@ -35,5 +35,36 @@ class TestVerifyLink(unittest.TestCase):
         self.assertIsNone(result)
 
 
+class TestVerifyRegex(unittest.TestCase):
+    """Tests that verify_regex_input verifies correctly"""
+    def test_verify_regex_ow(self):
+        """Tests that it will accept ow"""
+        with unittest.mock.patch('builtins.input', return_value='ow'):
+            result = mopro_scraper.verify_regex_input()
+
+        self.assertEqual(result, 'ow')
+
+    def test_verify_regex_finger(self):
+        """Tests that it will accept finger"""
+        with unittest.mock.patch('builtins.input', return_value='finger'):
+            result = mopro_scraper.verify_regex_input()
+
+        self.assertEqual(result, 'finger')
+
+    def test_verify_fist(self):
+        """Tests that it will accept fist"""
+        with unittest.mock.patch('builtins.input', return_value='fist'):
+            result = mopro_scraper.verify_regex_input()
+
+        self.assertEqual(result, 'fist')
+
+    def test_verify_ignores_case(self):
+        """Tests that it ignores case"""
+        with unittest.mock.patch('builtins.input', return_value='fISt'):
+            result = mopro_scraper.verify_regex_input()
+
+        self.assertEqual(result, 'fist')
+
+
 if __name__ == '__main__':
     unittest.main()

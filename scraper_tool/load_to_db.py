@@ -43,7 +43,7 @@ def insert_climb(climb_data, connection):
         CLIMB_DATA MUST BE TUPLE"""
     climb_id = None
     try:
-        insert_climb_query = 'INSERT INTO climbs (climb_name, url, grade) VALUES (%s, %s, %s) RETURNING id;'
+        insert_climb_query = 'INSERT INTO climbs (climb_name, url, grade, style) VALUES (%s, %s, %s, %s) RETURNING id;'
         climb_id = execute_query(connection, insert_climb_query, climb_data)
     except psycopg2.Error as e:
         if e.pgcode == '23505':
@@ -72,7 +72,6 @@ def sub_area_query(sub_area_data, connection):
     """ The query to insert into sub_area table
     SUB_AREA_DATA MUST BE TUPLE"""
 
-
     insert_sub_area = 'INSERT INTO sub_area (area, climb_id, area_id) VALUES (%s, %s, %s) RETURNING id;'
     sub_area_id = execute_query(connection, insert_sub_area, sub_area_data)
 
@@ -82,9 +81,15 @@ def sub_area_query(sub_area_data, connection):
 def style_query(style_data, connection):
     """The query to insert into climb_style table
     STYLE DATA MUST BE TUPLE"""
-
-    insert_style = 'INSERT INTO climb_style (climb_style, climb_id) VALUES (%s, %s) RETURNING id;'
-    style_id = execute_query(connection, insert_style, style_data)
+    style_id = None
+    try:
+        insert_style = 'INSERT INTO climb_style (climb_style) VALUES (%s) RETURNING id;'
+        style_id = execute_query(connection, insert_style, style_data)
+        print(style_id)
+    except psycopg2.Error as e:
+        if e.pgcode == '23505':
+            style_id_query = 'SELECT id FROM climb_style WHERE climb_style = %s'
+            style_id = execute_query(connection, style_id_query, style_data)
 
     return style_id
 
@@ -92,11 +97,12 @@ def style_query(style_data, connection):
 def main_query(connection, scrapped_data):
     """Runs all the queries to populate tables. If the url is already in climbs table, it bypasses to reduce
         redundancies and just fills in the climb_style information"""
-    climb_id = insert_climb((scrapped_data[1], scrapped_data[0], scrapped_data[4]), connection)
+    style = style_query((scrapped_data[-1],), connection)
+    climb_id = insert_climb((scrapped_data[1], scrapped_data[0], scrapped_data[4], style), connection)
     main_area_id = insert_main_area((scrapped_data[2],), connection)
 
     sub_area_id = sub_area_query((scrapped_data[3], climb_id, main_area_id), connection)
-    style = style_query((scrapped_data[-1], climb_id), connection)
+
 
     print(f'{Fore.BLUE}"{scrapped_data[1]}" loaded into database')
 
