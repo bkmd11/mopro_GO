@@ -1,3 +1,7 @@
+CREATE TABLE IF NOT EXISTS climb_style (
+	id SERIAL PRIMARY KEY,
+	climb_style TEXT NOT NULL CONSTRAINT one_style UNIQUE)
+	;
 CREATE TABLE IF NOT EXISTS climbs (
 	id SERIAL PRIMARY KEY,
 	climb_name TEXT NOT NULL,
@@ -15,9 +19,6 @@ CREATE TABLE IF NOT EXISTS sub_area (
 	climb_id INTEGER REFERENCES climbs(id),
 	area_id INTEGER REFERENCES main_area(id))
 	;
-CREATE TABLE IF NOT EXISTS climb_style (
-	id SERIAL PRIMARY KEY,
-	climb_style TEXT NOT NULL CONSTRAINT one_style UNIQUE)
-	;
+
 
 --TODO: need to modify the database to add state and not duplicate for style regex
