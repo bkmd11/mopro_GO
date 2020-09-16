@@ -41,6 +41,8 @@ def execute_query(connection, query, data):
 def insert_climb(climb_data, connection):
     """The query to load into climb table
         CLIMB_DATA MUST BE TUPLE"""
+    # TODO: breaks when url already exists and trying to add finger cracks
+    #  TypeError: 'NoneType' object is not subscriptable
     climb_id = None
     try:
         insert_climb_query = 'INSERT INTO climbs (climb_name, url, grade, style) VALUES (%s, %s, %s, %s) RETURNING id;'

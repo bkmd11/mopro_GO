@@ -60,6 +60,11 @@ class TestLoadToDB(unittest.TestCase):
 
         self.assertIsInstance(result, int)
 
+    def test_insert_climb_when_different_style_exists(self):
+        result = load_to_db.insert_climb((test_data[0][1], test_data[0][0], 'finger', 1), connection)
+
+        self.assertIsNotNone(result)
+
     def test_insert_climb_wont_repeat(self):
         # TODO: these do work differently for some reason
         with self.assertRaises(TypeError):
