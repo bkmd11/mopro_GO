@@ -89,7 +89,7 @@ def style_query(style_data, connection):
         if e.pgcode == '23505':
             style_id_query = 'SELECT id FROM climb_style WHERE climb_style = %s'
             style_id = execute_query(connection, style_id_query, style_data)
-
+    print(style_id)
     return style_id
 
 
@@ -112,6 +112,7 @@ def main_query(connection, scrapped_data):
         redundancies and just fills in the climb_style information"""
     style_id = style_query((scrapped_data[-1],), connection)
     climb_id = insert_climb((scrapped_data[1], scrapped_data[0], scrapped_data[4]), connection)
+    style_guide = insert_style_guide_query((climb_id, style_id), connection)  # TODO: this did not function correctly
     main_area_id = insert_main_area((scrapped_data[2],), connection)
 
     sub_area_id = sub_area_query((scrapped_data[3], climb_id, main_area_id), connection)
