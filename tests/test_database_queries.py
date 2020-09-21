@@ -20,55 +20,54 @@ connection.autocommit = True
 cursor = connection.cursor()
 
 cursor.execute('''CREATE TABLE IF NOT EXISTS climb_style (
-                        id SERIAL PRIMARY KEY,
-                        climb_style TEXT NOT NULL CONSTRAINT one_style UNIQUE)
-                        ;
-                    CREATE TABLE IF NOT EXISTS climbs (
-                        id SERIAL PRIMARY KEY,
-                        climb_name TEXT NOT NULL,
-                        url TEXT NOT NULL CONSTRAINT one_url UNIQUE,
-                        grade TEXT NOT NULL,
-                        style INTEGER REFERENCES climb_style(id))
-                        ;
-                    CREATE TABLE IF NOT EXISTS main_area (
-                        id SERIAL PRIMARY KEY,
-                        area TEXT NOT NULL CONSTRAINT one_area UNIQUE)
-                        ;
-                    CREATE TABLE IF NOT EXISTS sub_area (
-                        id SERIAL PRIMARY KEY,
-                        area TEXT NOT NULL,
-                        climb_id INTEGER REFERENCES climbs(id),
-                        area_id INTEGER REFERENCES main_area(id))
-                        ;
-                    ''')
+                    id SERIAL PRIMARY KEY,
+                    climb_style TEXT NOT NULL CONSTRAINT one_style UNIQUE)
+                    ;
+                CREATE TABLE IF NOT EXISTS climbs (
+                    id SERIAL PRIMARY KEY,
+                    climb_name TEXT NOT NULL,
+                    url TEXT NOT NULL CONSTRAINT one_url UNIQUE,
+                    grade TEXT NOT NULL)
+                    ;
+                CREATE TABLE IF NOT EXISTS style_guide (
+                    climb_name INTEGER REFERENCES climbs(id),
+                    style INTEGER REFERENCES climb_style(id),
+                    PRIMARY KEY (climb_name, style))
+                    ;
+                CREATE TABLE IF NOT EXISTS main_area (
+                    id SERIAL PRIMARY KEY,
+                    area TEXT NOT NULL CONSTRAINT one_area UNIQUE)
+                    ;
+                CREATE TABLE IF NOT EXISTS sub_area (
+                    id SERIAL PRIMARY KEY,
+                    area TEXT NOT NULL,
+                    climb_id INTEGER REFERENCES climbs(id),
+                    area_id INTEGER REFERENCES main_area(id))
+                    ;
+                                    ''')
 
 
 class TestLoadToDB(unittest.TestCase):
     # TODO: check against multiple styles
     def test_1_style_query(self):
-        result = load_to_db.style_query((test_data[0][5], ), connection)
+        result = load_to_db.style_query((test_data[0][5],), connection)
 
         self.assertIsInstance(result, int)
 
     def test_1_style_query_wont_repeat(self):
-        result = load_to_db.style_query((test_data[0][5], ), connection)
+        result = load_to_db.style_query((test_data[0][5],), connection)
 
         self.assertEqual(result, 1)
 
     def test_insert_climb(self):
-        result = load_to_db.insert_climb((test_data[0][1], test_data[0][0], test_data[0][4], 1), connection)
+        result = load_to_db.insert_climb((test_data[0][1], test_data[0][0], test_data[0][4]), connection)
 
         self.assertIsInstance(result, int)
 
-    def test_insert_climb_when_different_style_exists(self):
-        result = load_to_db.insert_climb((test_data[0][1], test_data[0][0], 'finger', 1), connection)
-
-        self.assertIsNotNone(result)
-
     def test_insert_climb_wont_repeat(self):
-        # TODO: these do work differently for some reason
-        with self.assertRaises(TypeError):
-            result = load_to_db.insert_climb((test_data[0][1], test_data[0][0], test_data[0][4], 0), connection)
+        result = load_to_db.insert_climb((test_data[0][1], test_data[0][0], test_data[0][4]), connection)
+
+        self.assertEqual(result, 1)
 
     def test_insert_main_area(self):
         result = load_to_db.insert_main_area((test_data[0][2],), connection)
@@ -76,8 +75,6 @@ class TestLoadToDB(unittest.TestCase):
         self.assertIsInstance(result, int)
 
     def test_main_area_wont_repeat(self):
-        # TODO: these do work differently for some reason
-        # with self.assertRaises(TypeError):
         result = load_to_db.insert_main_area((test_data[0][2],), connection)
 
         self.assertEqual(result, 1)
@@ -86,6 +83,16 @@ class TestLoadToDB(unittest.TestCase):
         result = load_to_db.sub_area_query((test_data[0][3], 1, 1), connection)
 
         self.assertIsInstance(result, int)
+
+    def test_insert_style_guide_query(self):
+        result = load_to_db.insert_style_guide_query((1, 1), connection)
+
+        self.assertEqual(result, 1)
+
+    def test_insert_style_guide_query_wont_repeat(self):
+        result = load_to_db.insert_style_guide_query((1, 1), connection)
+
+        self.assertEqual(result, '(1,1)')
 
 
 class TestSelectClimbQueries(unittest.TestCase):
@@ -104,7 +111,6 @@ class TestSelectClimbQueries(unittest.TestCase):
         result = select_climb_queries.get_main_area_id_query(connection, 'pawtuckaway')
 
         self.assertEqual(result, [(1,)])
-
 
     def test_get_climbs_by_sub_area(self):
         result = select_climb_queries.get_climbs_by_sub_area(connection, 'boulder-natural')

@@ -3,6 +3,7 @@ from psycopg2 import OperationalError
 
 import json
 
+# TODO: Need to make query to select style from style_guide table
 
 def create_connection(database, username, pw, host):
     """Creates the connection to database"""
