@@ -9,9 +9,9 @@ CREATE TABLE IF NOT EXISTS climbs (
     grade TEXT NOT NULL)
     ;
 CREATE TABLE IF NOT EXISTS style_guide (
-    climb_name INTEGER REFERENCES climbs(id),
+    climb_id INTEGER REFERENCES climbs(id),
     style INTEGER REFERENCES climb_style(id),
-    PRIMARY KEY (climb_name, style))
+    PRIMARY KEY (climb_id, style))
     ;
 CREATE TABLE IF NOT EXISTS main_area (
     id SERIAL PRIMARY KEY,

@@ -89,7 +89,6 @@ def style_query(style_data, connection):
         if e.pgcode == '23505':
             style_id_query = 'SELECT id FROM climb_style WHERE climb_style = %s'
             style_id = execute_query(connection, style_id_query, style_data)
-    print(style_id)
     return style_id
 
 
@@ -98,11 +97,11 @@ def insert_style_guide_query(climb_data, connection):
     CLIMB_DATA MUST BE TUPLE"""
     id_key = None
     try:
-        insert_query = 'INSERT INTO style_guide (climb_name, style) VALUES (%s, %s) RETURNING 1;'
+        insert_query = 'INSERT INTO style_guide (climb_id, style) VALUES (%s, %s) RETURNING 1;'
         id_key = execute_query(connection, insert_query, climb_data)
     except psycopg2.Error as e:
         if e.pgcode == '23505':
-            insert_query = 'SELECT (climb_name, style) FROM style_guide WHERE climb_name = %s AND style = %s'
+            insert_query = 'SELECT (climb_id, style) FROM style_guide WHERE climb_id = %s AND style = %s'
             id_key = execute_query(connection, insert_query, climb_data)
     return id_key
 
@@ -112,7 +111,7 @@ def main_query(connection, scrapped_data):
         redundancies and just fills in the climb_style information"""
     style_id = style_query((scrapped_data[-1],), connection)
     climb_id = insert_climb((scrapped_data[1], scrapped_data[0], scrapped_data[4]), connection)
-    style_guide = insert_style_guide_query((climb_id, style_id), connection)  # TODO: this did not function correctly
+    style_guide = insert_style_guide_query((climb_id, style_id), connection)
     main_area_id = insert_main_area((scrapped_data[2],), connection)
 
     sub_area_id = sub_area_query((scrapped_data[3], climb_id, main_area_id), connection)

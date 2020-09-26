@@ -30,9 +30,9 @@ cursor.execute('''CREATE TABLE IF NOT EXISTS climb_style (
                     grade TEXT NOT NULL)
                     ;
                 CREATE TABLE IF NOT EXISTS style_guide (
-                    climb_name INTEGER REFERENCES climbs(id),
+                    climb_id INTEGER REFERENCES climbs(id),
                     style INTEGER REFERENCES climb_style(id),
-                    PRIMARY KEY (climb_name, style))
+                    PRIMARY KEY (climb_id, style))
                     ;
                 CREATE TABLE IF NOT EXISTS main_area (
                     id SERIAL PRIMARY KEY,
@@ -130,6 +130,28 @@ class TestSelectClimbQueries(unittest.TestCase):
         result = select_climb_queries.get_climb_url_query(connection, 'Fritz\'s Demise')
 
         self.assertEqual(result, [('https://www.mountainproject.com/route/106306113/fritzs-demise',)])
+
+
+class TestXIntegration(unittest.TestCase):
+    """This test case is a disaster to problem solve why my database is so fucked up
+    when I ran this to add finger cracks the style_guide table did not load at all"""
+    def setUp(self):
+        load_to_db.main_query(connection, test_data[-1])
+        load_to_db.main_query(connection, test_data[-2])
+        self.ow_id = select_climb_queries.execute_query(connection, "SELECT id FROM climb_style WHERE climb_style = 'ow'")
+        self.finger_id = select_climb_queries.execute_query(connection, "SELECT id FROM climb_style WHERE climb_style = 'finger'")
+
+    def test_style_guide_populated_ow_id(self):
+        query = 'SELECT * FROM style_guide WHERE style = %s'
+        result = select_climb_queries.execute_query(connection, query, self.ow_id)
+
+        self.assertGreater(len(result), 0)
+
+    def test_style_guide_populated_finger_id(self):
+        query = 'SELECT * FROM style_guide WHERE style = %s'
+        result = select_climb_queries.execute_query(connection, query, self.finger_id)
+
+        self.assertGreater(len(result), 0)
 
 
 if __name__ == '__main__':
