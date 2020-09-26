@@ -7,8 +7,8 @@ from aiohttp import ClientSession
 
 from colorama import Fore
 OFFWIDTH_REGEX = re.compile(r'off width|off-width|chimney| ow | offwidth', re.I)
-FINGER_REGEX = re.compile(r'finger|finger-crack|finger crack', re.I)
-FIST_REGEX = re.compile(r'fist', re.I)
+FINGER_REGEX = re.compile(r'finger-width|finger width|finger-crack|finger crack', re.I)
+FIST_REGEX = re.compile(r'fist crack|fist-crack', re.I)
 # TODO: make scrapper look for all these types and save them to my database
 
 
